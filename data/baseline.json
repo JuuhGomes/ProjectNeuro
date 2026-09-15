@@ -1,0 +1,409 @@
+{
+  "meta": {
+    "documento": "Relatório Neuropsicológico Integrado — Avaliação Completa",
+    "avalianda": "Juliana",
+    "data_avaliacao": "07-09/03/2026",
+    "protocolo": "5 dias estruturados",
+    "profissao": "Analista Sênior DP e Gestão de Pessoas",
+    "formacao": ["Direito", "MBA Liderança e Gestão de Pessoas", "Extensão Finanças Comportamentais"],
+    "gerado_em": "15/09/2026",
+    "versao": "1.0"
+  },
+
+  "perfil_cognitivo": {
+    "framework": "WAIS-IV (estimativa estruturada)",
+    "indices": {
+      "ICV_compreensao_verbal": {
+        "escore_estimado": "125-130",
+        "percentil": "95-98",
+        "classificacao": "Muito Superior",
+        "nota": "Ponto mais forte do perfil"
+      },
+      "IMO_memoria_trabalho": {
+        "escore_estimado": "120-125",
+        "percentil": "91-95",
+        "classificacao": "Superior",
+        "nota": "Significativamente superior ao esperado para TDAH não tratado"
+      },
+      "IRP_raciocinio_perceptual": {
+        "escore_estimado": "115-120",
+        "percentil": "84-91",
+        "classificacao": "Médio-Superior a Superior"
+      },
+      "IVP_velocidade_processamento": {
+        "escore_estimado": "105-110",
+        "percentil": "63-75",
+        "classificacao": "Médio a Médio-Superior",
+        "nota": "Ponto relativamente mais fraco — padrão precisão > velocidade"
+      },
+      "QIT_total": {
+        "escore_estimado": "118-123",
+        "percentil": "88-94",
+        "classificacao": "Médio-Superior a Superior"
+      }
+    },
+    "subtestes": {
+      "digit_span_forward": 7,
+      "digit_span_backward": 6,
+      "dupla_tarefa_memoria_manipulacao": "5/5",
+      "memoria_verbal_aplicada": "6/6",
+      "stroop_color_word": "8/8 em 15s",
+      "atencao_sustentada_CPT": "11/11",
+      "flexibilidade_cognitiva_TMT": "20/20",
+      "fluencia_semantica_itens": 11,
+      "fluencia_nota": "Expansão semântica — incluiu habitats (padrão de pensamento divergente)",
+      "aritmetica_velocidade_s_por_item": 4.75
+    },
+    "discrepancia_critica": {
+      "descricao": "Gap funcional entre ambiente ideal e sob estresse",
+      "QI_ambiente_ideal": "~125",
+      "QI_sob_estresse": "~85-95",
+      "gap_estimado_pontos": "30-40",
+      "gatilhos_degradacao": [
+        "Múltiplas variáveis probabilísticas simultâneas",
+        "Pressão temporal",
+        "Sobrecarga sensorial",
+        "Pós-18h (crash de Ritalina)"
+      ]
+    },
+    "hipotese_dupla_excepcionalidade": {
+      "diagnostico": "TDAH + Altas Habilidades/Superdotação Verbal (2e)",
+      "criterios_atendidos": [
+        "QI Verbal ≥ 125 (critério moderno para 2e com TDAH)",
+        "Discrepância ICV-IVP de 20-25 pontos",
+        "Desempenho superior em testes controlados vs. 76% comprometimento no cotidiano (BRIEF-A)",
+        "Pensamento divergente/associativo identificado",
+        "Diagnóstico tardio de TDAH",
+        "Histórico de burnout por sub-compensação"
+      ]
+    }
+  },
+
+  "personalidade": {
+    "big_five_OCEAN": {
+      "abertura_experiencias": {
+        "escore": "2-3/10",
+        "classificacao": "Muito Baixa",
+        "implicacoes": "Preferência por estruturas definidas, intolerância a ambiguidade"
+      },
+      "conscienciosidade": {
+        "escore": "9/10",
+        "classificacao": "Muito Alta",
+        "implicacoes": "Planejamento excepcional, perfeccionismo, risco de burnout. Raro em TDAH (<5-10%)"
+      },
+      "extroversao": {
+        "escore": "6-7/10",
+        "classificacao": "Moderada-Alta",
+        "implicacoes": "Energiza-se socialmente, não busca protagonismo"
+      },
+      "amabilidade": {
+        "escore": "3.7/10",
+        "classificacao": "Baixa",
+        "implicacoes": "Assertividade direta, eficácia > harmonia relacional"
+      },
+      "neuroticismo": {
+        "escore": "5/10",
+        "classificacao": "Médio",
+        "implicacoes": "Boa resiliência basal considerando burnout recente"
+      }
+    },
+    "DISC": {
+      "data": "17/01/2025",
+      "dominancia": 56.0,
+      "influencia": 12.5,
+      "estabilidade": 17.5,
+      "conformidade": 20.95,
+      "perfil_predominante": "Dominância",
+      "interpretacao": "Orientada a resultados, assume controle, comunicação direta, eficácia > diplomacia"
+    },
+    "solides": {
+      "data": "25/02/2026",
+      "alerta": "Teste realizado em estado de energia MUITO BAIXA — capturou estado momentâneo, não perfil basal",
+      "executor": 22.99,
+      "comunicador": 11.49,
+      "planejador": 28.74,
+      "analista": 36.78,
+      "nota": "Contradiz DISC original em Dominância. Não usar como perfil basal"
+    },
+    "perfil_sensorial_dunn": {
+      "data": "Junho/2024",
+      "observacao": 29,
+      "exploracao": 41,
+      "sensibilidade": 42,
+      "esquiva": 39,
+      "interpretacao": "Sensibilidade acima da média (42/70) — detecta estímulos mais rapidamente que a maioria. Exploração abaixo da média = saturação sensorial crônica. Estratégia protetora: evitar buscar mais estímulos"
+    }
+  },
+
+  "tdah": {
+    "diagnostico": "TDAH Apresentação Combinada — SEVERA (DSM-5)",
+    "ASRS_18_OMS": {
+      "desatencao": {
+        "escore": 22,
+        "maximo": 36,
+        "percentual": 61,
+        "classificacao": "Moderada",
+        "sintomas_frequentes": [
+          "Dificuldade atenção em trabalho chato/repetitivo (4/4)",
+          "Evita/adia tarefas que exigem concentração (4/4)",
+          "Distração por barulho (4/4)",
+          "Dificuldade lembrar compromissos (3/4)",
+          "Erros por desatenção (3/4)"
+        ]
+      },
+      "hiperatividade_impulsividade": {
+        "escore": 35,
+        "maximo": 36,
+        "percentual": 97,
+        "classificacao": "SEVERA",
+        "sintomas_frequentes": [
+          "Mexer cadeira/balançar (4/4)",
+          "Sair do lugar (4/4)",
+          "Inquietude/agitação (4/4)",
+          "Dificuldade relaxar (4/4)",
+          "Motor ligado permanente (4/4)",
+          "Falar demais (4/4)",
+          "Terminar frases dos outros (4/4)",
+          "Dificuldade esperar (4/4)",
+          "Interromper outros (3/4)"
+        ]
+      },
+      "total": {
+        "escore": 57,
+        "maximo": 72,
+        "percentual": 79,
+        "classificacao": "Severo"
+      }
+    },
+    "BRIEF_A_funcoes_executivas": {
+      "escala": "0-10 (10 = máximo comprometimento)",
+      "dominios": {
+        "inibicao": { "escore": 10, "maximo": 16, "percentual": 63, "classificacao": "Moderada" },
+        "flexibilidade_cognitiva": { "escore": 14, "maximo": 16, "percentual": 88, "classificacao": "SEVERA", "nota": "Dificuldade quando planos mudam, trava em solução não-funcional, incomoda quando não sai como planejado" },
+        "controle_emocional": { "escore": 12, "maximo": 16, "percentual": 75, "classificacao": "Moderada-Alta", "nota": "Frustrações desproporcionais, dificuldade deixar pra lá" },
+        "iniciacao": { "escore": 9, "maximo": 12, "percentual": 75, "classificacao": "Moderada-Alta" },
+        "memoria_trabalho_aplicada": { "escore": 9, "maximo": 12, "percentual": 75, "classificacao": "Moderada-Alta", "nota": "Esquece ao ser interrompida" },
+        "organizacao_planejamento": { "escore": 10, "maximo": 12, "percentual": 83, "classificacao": "Alta", "nota": "Subestima complexidade, deixa última hora" }
+      },
+      "total": {
+        "escore": 64,
+        "maximo": 84,
+        "percentual": 76,
+        "classificacao": "Comprometimento Significativo"
+      }
+    },
+    "impacto_funcional": {
+      "escala": "0-10 (10 = máximo impacto)",
+      "trabalho_produtividade": 6,
+      "relacoes_interpessoais": 6,
+      "autoestima_bem_estar": 8,
+      "nota_bem_estar": "INDICADOR MAIS PREOCUPANTE — sofrimento alto pelo motor ligado permanente"
+    },
+    "paradoxo_central": "Testes cognitivos = funções executivas SUPERIORES (flexibilidade 20/20). Cotidiano (BRIEF-A) = flexibilidade 88% comprometida. Diferença: testes têm regras explícitas e ambiente controlado; vida real tem mudanças inesperadas e carga emocional"
+  },
+
+  "historico_medicamentoso": {
+    "tentativas_anteriores": [
+      { "medicamento": "Strattera (atomoxetina)", "motivo_descontinuacao": "Irritabilidade severa, amnésia anterógrada, inquietação excessiva" },
+      { "medicamento": "Bupropiona", "motivo_descontinuacao": "Vômitos, insônia, cefaleia, sem eficácia" },
+      { "medicamento": "Metilfenidato 10mg 2x/dia", "motivo_descontinuacao": "Picos/crashes, ansiedade, pensamentos negativos" },
+      { "medicamento": "Ritalina LA 20mg", "motivo_descontinuacao": "Overdose relativa — insônia, taquicardia, anorexia" }
+    ],
+    "medicacao_atual": {
+      "nome": "Ritalina LA 10mg",
+      "frequencia": "1x/dia",
+      "horario": "6h30",
+      "efeitos_positivos": [
+        "Melhora controle inibitório social",
+        "Memória de trabalho preservada (percentil 85)",
+        "Performance cognitiva superior em testes"
+      ],
+      "efeitos_residuais": [
+        "Crash marcado às 18h (rebote dopaminérgico)",
+        "Sintomas TDAH ainda severos (hiperatividade 97%)",
+        "Impacto funcional significativo"
+      ],
+      "conclusao": "SUBTRATAMENTO EVIDENTE"
+    },
+    "janela_terapeutica": {
+      "descricao": "Muito estreita — hipersensibilidade a doses moderadas-altas",
+      "menor_10mg": "Subtratamento",
+      "atual_10mg": "Tolerável mas insuficiente",
+      "zona_10_15mg": "Potencialmente ótima — NUNCA TESTADA",
+      "maior_20mg": "Overdose (histórico)"
+    }
+  },
+
+  "dados_fisiologicos_garmin": {
+    "periodo": "Fevereiro-Março 2026",
+    "estresse_diario": {
+      "domingos": "25-29 (recuperação)",
+      "segunda_quinta": "28-35 (moderado, estável)",
+      "sextas": "36-40 (PICO — coincide com crash de Ritalina)"
+    },
+    "sono": {
+      "sleep_score_medio": 81,
+      "escala": "0-100",
+      "classificacao": "Bom",
+      "FC_noturna_bpm": 66,
+      "FC_repouso_bpm": 60,
+      "body_battery_recuperacao": "+53 pontos",
+      "padrao_observado": "Sono compromete após estresse alto — estresse 40 → sono cai 16 pontos"
+    },
+    "HRV_variabilidade_frequencia_cardiaca": {
+      "valor_ms": 32,
+      "faixa_garmin_normalidade": "25-38ms",
+      "dentro_normalidade": true,
+      "ideal_atleta_ms": "45-65ms",
+      "abaixo_do_ideal": true,
+      "interpretacao": "Ativação simpática crônica residual — burnout em recuperação ativa"
+    }
+  },
+
+  "fenomenos_especificos": {
+    "ruminacao_mental": {
+      "padrao": "Pensamentos/diálogos imaginários por horas",
+      "piora": ["Baixa estimulação (banho, dirigindo)", "Pós-estresse + sono REM insuficiente"],
+      "tipos": {
+        "tipo_1": "Mind wandering neutro (TDAH) — auto-estimulação cognitiva",
+        "tipo_2": "Ruminação ansiosa — processamento emocional deficitário pós-estresse"
+      },
+      "diagnostico_diferencial": "TDAH severo (hiperatividade mental 97%) + déficit processamento emocional. NÃO é TOC primário (ausência de obsessões fixas, fácil interrupção por estímulo externo)"
+    },
+    "rigidez_compensatoria": {
+      "mecanismo": "TDAH gera caos → Alta Conscienciosidade cria estruturas rígidas → Funcionam SE ambiente coopera → Ambiente muda → Travamento",
+      "manifestacoes": [
+        "Flexibilidade superior em testes / 88% comprometida no cotidiano",
+        "Dificuldade quando planos mudam (4/4)",
+        "Trava em solução não-funcional (4/4)",
+        "Subestima complexidade de projetos (4/4)"
+      ]
+    },
+    "intolerancia_ambiguidade_probabilistica": {
+      "funciona_bem": ["Dados completos", "Opções binárias", "Regras explícitas"],
+      "colapsa": ["Múltiplas variáveis probabilísticas + pressão temporal + sobrecarga sensorial"],
+      "mecanismo": "Assume pior cenário para eliminar ambiguidade — Custo: sobrecarga crônica → burnout anterior"
+    },
+    "sistema_regulatorio_tudo_ou_nada": {
+      "modo_estrategico_5_5": "Tempo para análise, dados completos, ambiente controlado",
+      "modo_reativo_2_5": "Múltiplas ambiguidades + pressão + sobrecarga + pós-18h → bypass executivo",
+      "gatilho_principal": "Janela 18h-20h (crash Ritalina + acúmulo sensorial)"
+    }
+  },
+
+  "diagnostico_sintetico": {
+    "diagnostico_principal": "TDAH Apresentação Combinada — Severa (DSM-5)",
+    "hipotese_secundaria": "Dupla Excepcionalidade (2e): TDAH + Altas Habilidades Verbais",
+    "condicao_adicional_1": "Disfunção Executiva Secundária — rigidez compensatória",
+    "condicao_adicional_2": "Sensibilidade Sensorial Aumentada (Perfil Dunn)",
+    "condicao_adicional_3": "Burnout em Recuperação Ativa",
+    "forcas_excepcionais": [
+      "QI Superior 118-123 (percentil 88-94)",
+      "QI Verbal Muito Superior 125-130 (percentil 95-98)",
+      "Memória de Trabalho Superior (percentil 91-95)",
+      "Conscienciosidade Excepcional 9/10",
+      "Controle Inibitório excelente com medicação",
+      "Alta capacidade de planejamento em ambiente controlado"
+    ],
+    "vulnerabilidades_criticas": [
+      "Hiperatividade mental severa (97%) — sofrimento 8/10",
+      "Flexibilidade cognitiva sob mudanças inesperadas (88%)",
+      "Intolerância a ambiguidade probabilística",
+      "Sobrecarga sensorial crônica (Sensibilidade 42)",
+      "Crash de Ritalina às 18h",
+      "Ruminação mental por horas"
+    ]
+  },
+
+  "recomendacoes": {
+    "farmacologica": {
+      "prioridade": "MÁXIMA",
+      "opcao_1_primaria": {
+        "medicamento": "Guanfacina 1mg",
+        "horario": "Noite",
+        "racional": "Reduz hiperatividade mental sem estimulante, melhora flexibilidade cognitiva, melhora sono REM, sem risco de overdose",
+        "indicacao": "Hiperatividade 97%, sofrimento 8/10, sono REM comprometido"
+      },
+      "opcao_2": {
+        "medicamento": "Venvanse 20-30mg",
+        "racional": "Nunca tentou anfetaminas. Liberação suave 12-14h pode eliminar crash 18h",
+        "monitoramento": "HRV, estresse, sono"
+      },
+      "opcao_3": {
+        "medicamento": "Ritalina LA 15mg",
+        "racional": "Dose intermediária nunca testada (entre 10mg insuficiente e 20mg overdose)"
+      },
+      "nao_recomendados": ["Bupropiona", "Strattera", "Ritalina 20mg", "Metilfenidato fracionado"]
+    },
+    "gestao_sensorial": [
+      "Fones com cancelamento de ruído (não negociável)",
+      "Iluminação controlada — evitar fluorescentes",
+      "Pausas sensoriais a cada 90 minutos (5-10 min silêncio/escuro)",
+      "Protocolo 18h: redução intencional de demandas cognitivas após 17h",
+      "Evitar decisões complexas pós-17h"
+    ],
+    "gestao_ruminacao": [
+      "Journaling de descarga (5-10 min): listar o que incomoda, o que pode controlar",
+      "Agendamento de ruminação: 15min/dia de worry time",
+      "Externalização vocal: falar em voz alta no banho/dirigindo"
+    ],
+    "otimizacao_sono": [
+      "Quarto 16-19°C",
+      "Sem telas 1h antes",
+      "Banho quente 1-2h antes",
+      "Zero cafeína após 14h",
+      "Meta Sleep Score: >85",
+      "Meta tempo REM: >90min"
+    ],
+    "terapia_recomendada": {
+      "abordagem_1": "ACT — Defusão cognitiva para ruminação",
+      "abordagem_2": "Mindfulness adaptada para TDAH (foco sensorial concreto, não meditação tradicional)",
+      "abordagem_3": "Treino de flexibilidade cognitiva — exposição gradual a mudanças de plano",
+      "abordagem_4": "Assertividade sem desgaste relacional"
+    }
+  },
+
+  "prognostico": {
+    "curto_prazo_3_meses": [
+      "Redução de hiperatividade mental com Guanfacina",
+      "Melhora sono REM → redução de ruminação",
+      "HRV atingir 38-40ms"
+    ],
+    "medio_prazo_6_12_meses": [
+      "Hiperatividade: 97% → 60-70%",
+      "Sofrimento: 8/10 → 4-5/10",
+      "Impacto trabalho: 6/10 → 3-4/10"
+    ],
+    "longo_prazo_1_2_anos": [
+      "Estabilização completa pós-burnout",
+      "HRV 45+ms",
+      "Sistema regulatório menos binário"
+    ],
+    "classificacao_geral": "FAVORÁVEL — com intervenções adequadas"
+  },
+
+  "metas_reavaliacao": {
+    "3_meses_junho_2026": {
+      "ASRS_hiperatividade_meta": "<80%",
+      "BRIEF_flexibilidade_meta": "<75%",
+      "impacto_trabalho_meta": "<5/10",
+      "sofrimento_meta": "<6/10",
+      "HRV_meta_ms": ">35"
+    },
+    "6_meses_setembro_2026": {
+      "ASRS_hiperatividade_meta": "<70%",
+      "BRIEF_flexibilidade_meta": "<65%",
+      "impacto_trabalho_meta": "<4/10",
+      "sofrimento_meta": "<5/10",
+      "HRV_meta_ms": ">40",
+      "sleep_score_meta": ">85"
+    },
+    "9_meses_dezembro_2026": {
+      "ASRS_hiperatividade_meta": "<60%",
+      "BRIEF_flexibilidade_meta": "<55%",
+      "impacto_trabalho_meta": "<3/10",
+      "sofrimento_meta": "<4/10",
+      "HRV_meta_ms": ">45"
+    }
+  }
+}

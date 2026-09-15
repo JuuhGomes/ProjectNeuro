@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo Neuropsicológico — Juliana</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+:root{
+  --ink:#0d1f2d;--mid:#1e3a52;--slate:#4a6278;--border:#d4dde6;
+  --bg:#eef2f7;--white:#fff;--panel:#f7f9fc;
+  --gold:#b8860b;--gold-lt:#fdf6e3;
+  --green:#1a6b3c;--green-lt:#e8f5ee;
+  --red:#a02020;--red-lt:#fdeaea;
+  --blue:#1d4ed8;--blue-lt:#eff6ff;
+  --purple:#6d28d9;--purple-lt:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);}
+
+/* NAV */
+nav{background:var(--ink);color:#fff;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.25);}
+.nav-brand{font-size:14px;font-weight:600;letter-spacing:-.01em;}
+.nav-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.save-indicator{font-size:11px;color:rgba(255,255,255,.5);transition:.3s;}
+.save-indicator.saving{color:#fbbf24;}
+.save-indicator.saved{color:#34d399;}
+
+/* MAIN TABS */
+.main-tabs{display:flex;background:var(--ink);border-top:1px solid rgba(255,255,255,.08);}
+.main-tab{flex:1;padding:12px 8px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:rgba(255,255,255,.4);border-bottom:3px solid transparent;transition:.2s;user-select:none;position:relative;}
+.main-tab:hover{color:rgba(255,255,255,.7);}
+.main-tab.active{color:#fff;border-bottom-color:var(--gold);}
+.main-tab .tab-num{display:block;font-size:10px;font-weight:400;opacity:.55;margin-bottom:2px;}
+.tab-check{position:absolute;top:8px;right:10px;font-size:10px;color:#34d399;display:none;}
+.tab-check.show{display:block;}
+
+/* SESSION SELECTOR */
+.session-bar{background:var(--mid);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.session-bar label{font-size:11px;color:rgba(255,255,255,.6);font-weight:500;}
+.session-bar select{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#fff;padding:5px 10px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;}
+.session-bar select option{background:var(--ink);color:#fff;}
+.session-bar .sep{width:1px;height:20px;background:rgba(255,255,255,.15);}
+.btn-sm{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:.15s;}
+.btn-sm-gold{background:var(--gold);color:#fff;}
+.btn-sm-ghost{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2);}
+.btn-sm-ghost:hover{background:rgba(255,255,255,.2);}
+.btn-sm-red{background:var(--red);color:#fff;}
+
+/* SUB TABS */
+.sub-tabs{display:flex;gap:2px;padding:16px 20px 0;max-width:1060px;margin:0 auto;flex-wrap:wrap;}
+.sub-tab{padding:8px 14px;font-size:12px;font-weight:500;color:var(--slate);background:#fff;border:1px solid var(--border);border-radius:7px 7px 0 0;cursor:pointer;transition:.15s;user-select:none;display:flex;align-items:center;gap:6px;}
+.sub-tab:hover{color:var(--ink);}
+.sub-tab.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.sub-tab .stab-check{font-size:10px;color:#34d399;display:none;}
+.sub-tab.done .stab-check{display:inline;}
+.sub-tab.done{border-color:var(--green);}
+.sub-tab.active .stab-check{color:rgba(255,255,255,.7);}
+
+/* MAIN */
+main{max-width:1060px;margin:0 auto;padding:0 20px 80px;}
+.panel{display:none;animation:fi .18s ease;} .panel.active{display:block;}
+.sub-panel{display:none;background:#fff;border:1px solid var(--ink);border-radius:0 10px 10px 10px;padding:24px;margin-bottom:14px;}
+.sub-panel.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:14px;}
+.card-title{font-size:11px;font-weight:600;color:var(--slate);letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+/* SPLIT */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.split-col{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;}
+.split-col.baseline{border-top:3px solid var(--slate);}
+.split-col.atual{border-top:3px solid var(--gold);}
+.col-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.col-label.l-base{color:var(--slate);}
+.col-label.l-atual{color:var(--gold);}
+
+/* DATA ROWS */
+.data-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg);}
+.data-row:last-child{border-bottom:none;}
+.dr-label{font-size:12px;color:var(--slate);}
+.dr-val{font-size:13px;font-weight:600;color:var(--ink);}
+.dr-val.critical{color:var(--red);}
+.dr-val.strong{color:var(--green);}
+
+/* FORMS */
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.fi{display:flex;flex-direction:column;gap:4px;}
+.fi label{font-size:11px;font-weight:500;color:var(--slate);}
+input,select,textarea{border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;font-family:'Inter',sans-serif;color:var(--ink);background:#fff;width:100%;transition:.15s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.08);}
+input.err{border-color:var(--red);background:var(--red-lt);}
+input.ok{border-color:var(--green);}
+textarea{resize:vertical;min-height:68px;}
+.field-hint{font-size:10px;color:var(--slate);margin-top:2px;}
+.field-err{font-size:10px;color:var(--red);margin-top:2px;display:none;}
+.field-err.show{display:block;}
+
+/* SCALE BUTTONS */
+.scale-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap;}
+.scale-lbl{font-size:12px;color:var(--ink);min-width:210px;line-height:1.4;}
+.sc-wrap{display:flex;gap:3px;}
+.sc-btn{width:30px;height:30px;border:1px solid var(--border);border-radius:5px;background:#fff;cursor:pointer;font-size:11px;font-weight:600;color:var(--slate);transition:.1s;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.sc-btn:hover{border-color:var(--blue);color:var(--blue);}
+.sc-btn.sel{background:var(--ink);border-color:var(--ink);color:#fff;}
+.sc-val{font-size:12px;font-weight:700;color:var(--gold);width:24px;text-align:center;}
+.base-ref{font-size:10px;color:var(--slate);background:var(--panel);padding:2px 6px;border-radius:4px;white-space:nowrap;}
+
+/* TEST BLOCKS */
+.test-block{border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:12px;position:relative;}
+.test-num{position:absolute;top:-10px;left:14px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;}
+.test-block h4{font-size:14px;font-weight:600;margin-bottom:8px;padding-top:6px;}
+.instr{font-size:12px;color:var(--slate);background:var(--panel);border-radius:6px;padding:10px;margin-bottom:10px;line-height:1.6;}
+.stim{font-size:16px;font-weight:700;color:var(--mid);background:var(--panel);border-radius:8px;padding:14px;text-align:center;margin:8px 0;letter-spacing:.05em;line-height:1.7;}
+.resp-row{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.resp-lbl{font-size:12px;color:var(--slate);min-width:110px;}
+.ri{width:80px!important;}
+
+/* TIMER */
+.timer-wrap{display:flex;align-items:center;gap:10px;margin:10px 0;}
+.timer-display{font-size:24px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;min-width:64px;}
+.timer-display.running{color:var(--green);}
+.timer-display.done{color:var(--gold);}
+.timer-display.urgent{color:var(--red);}
+.btn-timer{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:.15s;}
+.btn-timer-start{background:var(--green);color:#fff;}
+.btn-timer-stop{background:var(--red);color:#fff;}
+.btn-timer-reset{background:var(--panel);color:var(--slate);border:1px solid var(--border);}
+
+/* QUESTIONNAIRE */
+.q-item{border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:8px;transition:.15s;}
+.q-item.answered{border-color:var(--green);background:rgba(26,107,60,.03);}
+.q-text{font-size:13px;color:var(--ink);margin-bottom:10px;line-height:1.5;}
+.q-opts{display:flex;gap:6px;flex-wrap:wrap;}
+.q-opt{padding:6px 13px;border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;transition:.15s;background:#fff;touch-action:manipulation;}
+.q-opt:hover{border-color:var(--blue);}
+.q-opt.sel{background:var(--ink);color:#fff;border-color:var(--ink);}
+.q-num{font-size:10px;font-weight:700;color:var(--slate);margin-bottom:5px;}
+.q-progress{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.q-progress-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.q-progress-fill{height:100%;background:var(--green);border-radius:3px;transition:.3s;}
+.q-progress-txt{font-size:11px;color:var(--slate);white-space:nowrap;}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:.15s;}
+.btn-primary{background:var(--ink);color:#fff;} .btn-primary:hover{background:var(--mid);}
+.btn-gold{background:var(--gold);color:#fff;} .btn-gold:hover{opacity:.9;}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--border);} .btn-ghost:hover{border-color:var(--ink);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center;}
+
+/* BADGES */
+.badge{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.b-gold{background:var(--gold-lt);color:var(--gold);}
+.b-green{background:var(--green-lt);color:var(--green);}
+.b-red{background:var(--red-lt);color:var(--red);}
+.b-blue{background:var(--blue-lt);color:var(--blue);}
+.b-purple{background:var(--purple-lt);color:var(--purple);}
+
+/* ALERTS */
+.alert{border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px;line-height:1.5;}
+.a-gold{background:var(--gold-lt);border:1px solid #e8c84a;color:#6b4c00;}
+.a-green{background:var(--green-lt);border:1px solid #6dbb8a;color:#1a4a2a;}
+.a-blue{background:var(--blue-lt);border:1px solid #93c5fd;color:#1e3a8a;}
+.a-red{background:var(--red-lt);border:1px solid #fca5a5;color:#7a1a1a;}
+.a-purple{background:var(--purple-lt);border:1px solid #c4b5fd;color:#4c1d95;}
+
+/* COMPARISON TABLE */
+.ct{width:100%;border-collapse:collapse;font-size:13px;}
+.ct th{background:var(--ink);color:#fff;padding:9px 12px;text-align:left;font-size:11px;font-weight:600;}
+.ct th:first-child{border-radius:8px 0 0 0;}.ct th:last-child{border-radius:0 8px 0 0;}
+.ct td{padding:9px 12px;border-bottom:1px solid var(--border);}
+.ct tr:last-child td{border-bottom:none;}
+.ct tr:nth-child(even) td{background:var(--panel);}
+.ct tr.improved td{background:var(--green-lt)!important;}
+.ct tr.declined td{background:var(--red-lt)!important;}
+.ct .cat-row td{background:rgba(13,31,45,.05)!important;font-weight:600;font-size:11px;color:var(--slate);letter-spacing:.04em;text-transform:uppercase;}
+.d-up{color:var(--green);font-weight:700;}.d-dn{color:var(--red);font-weight:700;}.d-eq{color:var(--slate);}
+
+/* METRIC GRID */
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:12px;}
+.mb{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:12px;text-align:center;}
+.mb-lbl{font-size:10px;color:var(--slate);font-weight:500;margin-bottom:4px;}
+.mb-val{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.03em;}
+.mb-sub{font-size:10px;color:var(--slate);margin-top:2px;}
+.mb.mb-critical .mb-val{color:var(--red);}
+.mb.mb-good .mb-val{color:var(--green);}
+
+/* SCORE BOX */
+.score-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;margin:12px 0;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.score-item .score-lbl{font-size:11px;color:var(--slate);margin-bottom:4px;}
+.score-item .score-num{font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-.03em;}
+.score-item .score-pct{font-size:13px;font-weight:600;margin-top:2px;}
+.score-pct.low{color:var(--green);}.score-pct.mid{color:var(--gold);}.score-pct.high{color:var(--red);}
+.score-sep{width:1px;height:60px;background:var(--border);}
+
+/* CHART */
+.chart-wrap{position:relative;height:280px;margin:16px 0;}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;}
+.chart-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--slate);}
+.chart-legend-dot{width:10px;height:10px;border-radius:50%;}
+
+/* PROGRESS BAR */
+.prog{background:var(--border);border-radius:4px;height:7px;overflow:hidden;margin-top:3px;}
+.prog-fill{height:100%;border-radius:4px;transition:.4s;}
+.pf-g{background:var(--green);}.pf-gold{background:var(--gold);}.pf-r{background:var(--red);}
+
+/* DOMAIN SCORES */
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:12px 0;}
+.domain-box{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:12px;}
+.domain-name{font-size:11px;font-weight:600;color:var(--slate);margin-bottom:6px;}
+.domain-val{font-size:18px;font-weight:700;color:var(--ink);}
+.domain-compare{font-size:11px;color:var(--slate);margin-top:2px;}
+
+/* RUMINAÇÃO */
+.rum-item{border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;}
+.rum-text{font-size:13px;margin-bottom:8px;}
+.rum-scale{display:flex;gap:4px;}
+.rum-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:5px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:var(--slate);transition:.1s;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.rum-btn:hover{border-color:var(--blue);}
+.rum-btn.sel{background:var(--purple);border-color:var(--purple);color:#fff;}
+
+/* FARMACOVIGILÂNCIA */
+.med-row{display:grid;grid-template-columns:1fr 1fr 1fr 2fr;gap:10px;margin-bottom:10px;align-items:start;}
+
+/* LAUDO */
+.laudo-hdr{background:var(--ink);color:#fff;border-radius:10px;padding:26px;text-align:center;margin-bottom:22px;}
+.laudo-hdr h2{font-family:'Lora',serif;font-size:20px;margin-bottom:6px;}
+.laudo-hdr p{font-size:11px;opacity:.6;}
+.laudo-body{font-family:'Lora',serif;line-height:1.85;}
+.l-sec{margin-bottom:22px;}
+.l-sec h3{font-size:14px;font-weight:600;color:var(--ink);padding-bottom:5px;border-bottom:2px solid var(--gold);display:inline-block;margin-bottom:10px;}
+.l-sec p{font-size:13px;margin-bottom:8px;}
+.l-interp{background:var(--panel);border-left:3px solid var(--gold);padding:10px 14px;border-radius:0 7px 7px 0;margin:8px 0;font-size:12px;}
+.l-flag{background:var(--red-lt);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 7px 7px 0;margin:8px 0;font-size:12px;}
+.l-good{background:var(--green-lt);border-left:3px solid var(--green);padding:10px 14px;border-radius:0 7px 7px 0;margin:8px 0;font-size:12px;}
+
+/* PRESENTATION MODE */
+body.presentation-mode input,
+body.presentation-mode select,
+body.presentation-mode textarea,
+body.presentation-mode .btn-row,
+body.presentation-mode .sub-tabs,
+body.presentation-mode .session-bar,
+body.presentation-mode .timer-wrap,
+body.presentation-mode .q-opts{display:none!important;}
+body.presentation-mode .dr-val.pending{font-style:normal;}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-bg.show{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:28px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:10px;}
+.modal p{font-size:13px;color:var(--slate);margin-bottom:18px;line-height:1.6;}
+.modal .btn-row{margin-top:0;}
+
+hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
+
+@media(max-width:700px){
+  .split{grid-template-columns:1fr;}
+  .mg{grid-template-columns:repeat(2,1fr);}
+  .sub-tabs{padding:10px 10px 0;gap:4px;}
+  .sub-tab{font-size:11px;padding:6px 10px;}
+  .scale-lbl{min-width:160px;}
+  .sc-btn{width:28px;height:28px;}
+  .med-row{grid-template-columns:1fr 1fr;}
+  nav{padding:0 14px;}
+  .session-bar{padding:8px 14px;}
+}
+@media print{
+  nav,.main-tabs,.session-bar,.sub-tabs,.btn-row,.no-print,#modal-new-session{display:none!important;}
+  main{padding:0;max-width:100%;}
+  .sub-panel{display:block!important;border:none;padding:0;}
+  .card{box-shadow:none;border:1px solid #ccc;}
+}
+</style>
+</head>
+<body>
+
+<!-- MODAL NOVA SESSÃO -->
+<div class="modal-bg" id="modal-new-session">
+  <div class="modal">
+    <h3>Nova Avaliação</h3>
+    <p>Crie uma nova sessão de avaliação. Os dados anteriores são mantidos e podem ser comparados.</p>
+    <div class="fi" style="margin-bottom:14px;">
+      <label>Nome / Identificação</label>
+      <input type="text" id="new-nome" placeholder="Ex: Juliana"/>
+    </div>
+    <div class="fi" style="margin-bottom:14px;">
+      <label>Tipo de Avaliação</label>
+      <select id="new-tipo">
+        <option value="baseline">Baseline (1ª avaliação)</option>
+        <option value="3meses">Reavaliação 3 meses</option>
+        <option value="6meses" selected>Reavaliação 6 meses</option>
+        <option value="9meses">Reavaliação 9 meses</option>
+        <option value="12meses">Reavaliação 12 meses</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+    <div class="fi" style="margin-bottom:18px;">
+      <label>Data</label>
+      <input type="date" id="new-data"/>
+    </div>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn btn-gold" onclick="criarSessao()">Criar Sessão</button>
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <div>
+    <div class="nav-brand">Protocolo Neuropsicológico Longitudinal</div>
+    <div class="nav-sub">Sistema de Avaliação — Juliana</div>
+  </div>
+  <div class="nav-right">
+    <span class="save-indicator" id="saveIndicator">● Salvo</span>
+    <button class="btn-sm btn-sm-ghost" onclick="togglePresentationMode()">👁 Apresentação</button>
+    <button class="btn-sm btn-sm-ghost" onclick="exportarCSV()">⬇ CSV</button>
+  </div>
+</nav>
+
+<!-- MAIN TABS -->
+<div class="main-tabs">
+  <div class="main-tab active" onclick="switchMain('avaliacao',this)">
+    <span class="tab-num">CAMPO 1</span>
+    Protocolo de Avaliação
+    <span class="tab-check" id="tc-av">✓</span>
+  </div>
+  <div class="main-tab" onclick="switchMain('analise',this)">
+    <span class="tab-num">CAMPO 2</span>
+    Análise Comparativa & Laudo
+  </div>
+</div>
+
+<!-- SESSION BAR -->
+<div class="session-bar">
+  <label>Sessão ativa:</label>
+  <select id="session-selector" onchange="carregarSessao()">
+    <option value="">— selecione —</option>
+  </select>
+  <div class="sep"></div>
+  <button class="btn-sm btn-sm-gold" onclick="abrirModal()">+ Nova Avaliação</button>
+  <button class="btn-sm btn-sm-ghost" onclick="duplicarSessao()">⎘ Duplicar</button>
+  <button class="btn-sm btn-sm-ghost" style="margin-left:auto;" onclick="confirmarExcluir()">🗑 Excluir sessão</button>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════
+     CAMPO 1 — PROTOCOLO
+══════════════════════════════ -->
+<div class="panel active" id="panel-avaliacao">
+  <div class="sub-tabs" id="subtabs-av">
+    <div class="sub-tab active" onclick="switchSub('av','cog',this)">
+      Testes Cognitivos <span class="stab-check">✓</span>
+    </div>
+    <div class="sub-tab" onclick="switchSub('av','asrs',this)">
+      ASRS-18 <span class="stab-check">✓</span>
+    </div>
+    <div class="sub-tab" onclick="switchSub('av','brief',this)">
+      BRIEF-A <span class="stab-check">✓</span>
+    </div>
+    <div class="sub-tab" onclick="switchSub('av','ruminacao',this)">
+      Ruminação <span class="stab-check">✓</span>
+    </div>
+    <div class="sub-tab" onclick="switchSub('av','bigfive',this)">
+      Big Five <span class="stab-check">✓</span>
+    </div>
+    <div class="sub-tab" onclick="switchSub('av','sensorial',this)">
+      Sensorial <span class="stab-check">✓</span>
+    </div>
+    <div class="sub-tab" onclick="switchSub('av','farma',this)">
+      Farmacologia <span class="stab-check">✓</span>
+    </div>
+    <div class="sub-tab" onclick="switchSub('av','contexto',this)">
+      Contexto & Garmin <span class="stab-check">✓</span>
+    </div>
+  </div>
+
+  <!-- ── TESTES COGNITIVOS ── -->
+  <div class="sub-panel active" id="av-cog">
+    <div class="alert a-gold">⚠️ Realize cada teste antes de registrar. Os cronômetros integrados estão em cada bloco.</div>
+
+    <!-- T1 DIGIT SPAN -->
+    <div class="test-block">
+      <div class="test-num">TESTE 1</div>
+      <h4>Digit Span — Memória de Trabalho</h4>
+      <div class="instr"><strong>Forward:</strong> Leia cada sequência 1 número/segundo, repita na mesma ordem. Anote o maior nível correto consecutivo.<br><strong>Backward:</strong> Repita as sequências na ordem INVERSA.</div>
+      <div class="stim" style="font-size:13px;text-align:left;line-height:2;">
+        <strong>Forward:</strong> 4-7-2 &nbsp;/&nbsp; 8-3-9-1 &nbsp;/&nbsp; 5-2-8-4-6 &nbsp;/&nbsp; 3-9-1-7-4-2 &nbsp;/&nbsp; 6-1-8-3-9-5-2 &nbsp;/&nbsp; 4-7-2-9-1-6-8-3<br>
+        <strong>Backward:</strong> 6-2 &nbsp;/&nbsp; 3-8-1 &nbsp;/&nbsp; 9-2-5-7 &nbsp;/&nbsp; 4-1-8-3-6 &nbsp;/&nbsp; 7-3-9-2-5-1 &nbsp;/&nbsp; 2-8-4-6-1-9-3
+      </div>
+      <div class="resp-row">
+        <span class="resp-lbl">Forward (dígitos):</span>
+        <input type="number" class="ri" id="t_dsf" min="2" max="9" placeholder="Ex: 7" oninput="validateField(this,2,9);autoSave()"/>
+        <span class="field-hint" style="font-size:11px;color:var(--slate);">baseline: 7</span>
+        <span class="resp-lbl">Backward:</span>
+        <input type="number" class="ri" id="t_dsb" min="2" max="8" placeholder="Ex: 6" oninput="validateField(this,2,8);autoSave()"/>
+        <span class="field-hint" style="font-size:11px;color:var(--slate);">baseline: 6</span>
+      </div>
+    </div>
+
+    <!-- T2 STROOP -->
+    <div class="test-block">
+      <div class="test-num">TESTE 2</div>
+      <h4>Stroop — Controle Inibitório</h4>
+      <div class="instr">Diga em voz alta a <strong>COR DA TINTA</strong> (não a palavra). Clique em "Iniciar" para contar 15 segundos.</div>
+      <div class="stim">
+        <span style="color:#e53e3e;">AZUL</span>&nbsp;
+        <span style="color:#2b6cb0;">VERDE</span>&nbsp;
+        <span style="color:#276749;">VERMELHO</span>&nbsp;
+        <span style="color:#744210;">AZUL</span>&nbsp;
+        <span style="color:#e53e3e;">PRETO</span><br>
+        <span style="color:#276749;">AMARELO</span>&nbsp;
+        <span style="color:#2b6cb0;">VERMELHO</span>&nbsp;
+        <span style="color:#744210;">VERDE</span>
+      </div>
+      <div class="timer-wrap">
+        <span class="timer-display" id="timer-stroop">15s</span>
+        <button class="btn-timer btn-timer-start" onclick="startTimer('stroop',15)">▶ Iniciar</button>
+        <button class="btn-timer btn-timer-reset" onclick="resetTimer('stroop',15)">↺ Resetar</button>
+      </div>
+      <div class="resp-row">
+        <span class="resp-lbl">Acertos em 15s:</span>
+        <input type="number" class="ri" id="t_stroop" min="0" max="8" placeholder="Ex: 8" oninput="validateField(this,0,8);autoSave()"/>
+        <span class="field-hint" style="font-size:11px;color:var(--slate);">/8 — baseline: 8/8</span>
+      </div>
+    </div>
+
+    <!-- T3 FLUÊNCIA -->
+    <div class="test-block">
+      <div class="test-num">TESTE 3</div>
+      <h4>Fluência Semântica</h4>
+      <div class="instr">Em <strong>60 segundos</strong>, diga o maior número de animais possível. Clique em "Iniciar" para contar o tempo.</div>
+      <div class="timer-wrap">
+        <span class="timer-display" id="timer-fluencia">60s</span>
+        <button class="btn-timer btn-timer-start" onclick="startTimer('fluencia',60)">▶ Iniciar</button>
+        <button class="btn-timer btn-timer-reset" onclick="resetTimer('fluencia',60)">↺ Resetar</button>
+      </div>
+      <div class="resp-row">
+        <span class="resp-lbl">Animais válidos:</span>
+        <input type="number" class="ri" id="t_flu" min="0" max="50" placeholder="Ex: 11" oninput="validateField(this,0,50);autoSave()"/>
+        <span class="field-hint" style="font-size:11px;color:var(--slate);">baseline: 11</span>
+        <span class="resp-lbl">Obs.:</span>
+        <input type="text" id="t_flu_obs" placeholder="Ex: incluiu habitats" style="max-width:200px;" oninput="autoSave()"/>
+      </div>
+    </div>
+
+    <!-- T4 ATENÇÃO -->
+    <div class="test-block">
+      <div class="test-num">TESTE 4</div>
+      <h4>Atenção Sustentada — CPT</h4>
+      <div class="instr">Leia cada letra em voz alta (1/segundo). Bata palma toda vez que aparecer <strong>X</strong>. Total de X = 11.</div>
+      <div class="stim" style="font-size:14px;letter-spacing:.1em;">K–F–X–A–T–X–B–X–P–L–X–Z–M–X–Q–X–W–D–X–G–R–X–N–X–Y–C–X–H–J–X–X–S</div>
+      <div class="resp-row">
+        <span class="resp-lbl">Acertos (/11):</span>
+        <input type="number" class="ri" id="t_cpt" min="0" max="11" placeholder="Ex: 11" oninput="validateField(this,0,11);autoSave()"/>
+        <span class="field-hint" style="font-size:11px;color:var(--slate);">baseline: 11/11</span>
+        <span class="resp-lbl">Erros:</span>
+        <input type="number" class="ri" id="t_cpt_err" min="0" max="30" placeholder="Ex: 0" oninput="autoSave()"/>
+      </div>
+    </div>
+
+    <!-- T5 TMT -->
+    <div class="test-block">
+      <div class="test-num">TESTE 5</div>
+      <h4>Trail Making — Flexibilidade Cognitiva</h4>
+      <div class="instr"><strong>Parte A:</strong> Conecte mentalmente 1→2→...→20 em ordem. Use o cronômetro.<br><strong>Parte B:</strong> 1→A→2→B→...→10→J. Cronometre separado.</div>
+      <div class="timer-wrap">
+        <span class="timer-display" id="timer-tmta">0s</span>
+        <button class="btn-timer btn-timer-start" onclick="startTimerUp('tmta')">▶ Iniciar A</button>
+        <button class="btn-timer btn-timer-stop" onclick="stopTimerUp('tmta','t_tmta')">■ Parar A</button>
+        &nbsp;&nbsp;
+        <span class="timer-display" id="timer-tmtb">0s</span>
+        <button class="btn-timer btn-timer-start" onclick="startTimerUp('tmtb')">▶ Iniciar B</button>
+        <button class="btn-timer btn-timer-stop" onclick="stopTimerUp('tmtb','t_tmtb')">■ Parar B</button>
+      </div>
+      <div class="resp-row">
+        <span class="resp-lbl">Parte A (seg):</span>
+        <input type="number" class="ri" id="t_tmta" placeholder="Ex: 28" oninput="autoSave()"/>
+        <span class="resp-lbl">Parte B (seg):</span>
+        <input type="number" class="ri" id="t_tmtb" placeholder="Ex: 55" oninput="autoSave()"/>
+      </div>
+    </div>
+
+    <!-- T6 ARITMÉTICA -->
+    <div class="test-block">
+      <div class="test-num">TESTE 6</div>
+      <h4>Aritmética Mental — Velocidade de Processamento</h4>
+      <div class="instr">Resolva mentalmente. Inicie o cronômetro, responda todos, pare quando terminar.</div>
+      <div class="stim" style="font-size:14px;">17 × 4 = ? &nbsp;|&nbsp; 144 ÷ 12 = ? &nbsp;|&nbsp; 38 + 67 = ? &nbsp;|&nbsp; 250 − 83 = ? &nbsp;|&nbsp; 15% de 280 = ?</div>
+      <div style="font-size:11px;color:var(--slate);margin:5px 0 8px;">Gabaritos: 68 · 12 · 105 · 167 · 42</div>
+      <div class="timer-wrap">
+        <span class="timer-display" id="timer-arit">0s</span>
+        <button class="btn-timer btn-timer-start" onclick="startTimerUp('arit')">▶ Iniciar</button>
+        <button class="btn-timer btn-timer-stop" onclick="stopTimerUp('arit','t_arit_t')">■ Parar</button>
+      </div>
+      <div class="resp-row">
+        <span class="resp-lbl">Acertos (/5):</span>
+        <input type="number" class="ri" id="t_arit" min="0" max="5" placeholder="Ex: 5" oninput="validateField(this,0,5);autoSave()"/>
+        <span class="resp-lbl">Tempo (seg):</span>
+        <input type="number" class="ri" id="t_arit_t" placeholder="Auto" oninput="autoSave()"/>
+        <span class="field-hint" style="font-size:11px;color:var(--slate);">baseline: ~95s</span>
+      </div>
+    </div>
+
+    <!-- T7 ANALOGIAS -->
+    <div class="test-block">
+      <div class="test-num">TESTE 7</div>
+      <h4>Analogias Verbais — Compreensão Verbal</h4>
+      <div class="instr">Complete cada analogia. Compare com o gabarito após terminar.</div>
+      <div class="stim" style="font-size:13px;text-align:left;line-height:2.2;">
+        1. Médico está para hospital assim como professor está para _____<br>
+        2. Alegria está para choro assim como medo está para _____<br>
+        3. Lua está para noite assim como sol está para _____<br>
+        4. Advogado está para lei assim como médico está para _____<br>
+        5. Livro está para ler assim como música está para _____
+      </div>
+      <div style="font-size:11px;color:var(--slate);margin:5px 0 8px;">Gabaritos: 1-escola · 2-tremor/fuga · 3-dia · 4-medicina · 5-ouvir</div>
+      <div class="resp-row">
+        <span class="resp-lbl">Acertos (/5):</span>
+        <input type="number" class="ri" id="t_anal" min="0" max="5" placeholder="Ex: 4" oninput="validateField(this,0,5);autoSave()"/>
+        <span class="field-hint" style="font-size:11px;color:var(--slate);">baseline: 4/5</span>
+      </div>
+    </div>
+
+    <!-- QI ESTIMADO -->
+    <div class="card">
+      <div class="card-title">Índices Estimados WAIS-IV</div>
+      <div class="alert a-blue">Baseline: QI Total 118-123 · ICV 125-130 · IMO 120-125 · IRP 115-120 · IVP 105-110 · Gap 30-40pts</div>
+      <div class="fg">
+        <div class="fi"><label>QI Total Estimado</label><input type="number" id="qi_total" placeholder="Ex: 121" oninput="validateField(this,70,160);autoSave()"/><span class="field-err" id="err_qi_total">Valor entre 70 e 160</span></div>
+        <div class="fi"><label>ICV — Verbal</label><input type="number" id="qi_icv" placeholder="Ex: 128" oninput="validateField(this,70,160);autoSave()"/></div>
+        <div class="fi"><label>IMO — Memória</label><input type="number" id="qi_imo" placeholder="Ex: 123" oninput="validateField(this,70,160);autoSave()"/></div>
+        <div class="fi"><label>IRP — Perceptual</label><input type="number" id="qi_irp" placeholder="Ex: 118" oninput="validateField(this,70,160);autoSave()"/></div>
+        <div class="fi"><label>IVP — Velocidade</label><input type="number" id="qi_ivp" placeholder="Ex: 109" oninput="validateField(this,70,160);autoSave()"/></div>
+        <div class="fi"><label>Gap Funcional (pts)</label><input type="number" id="qi_gap" placeholder="Ex: 30" oninput="autoSave()"/></div>
+      </div>
+      <div class="fi" style="margin-top:12px;"><label>Observações cognitivas</label>
+        <textarea id="qi_obs" placeholder="Padrões observados, diferenças em relação ao baseline..." oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ASRS-18 ── -->
+  <div class="sub-panel" id="av-asrs">
+    <div class="alert a-gold">Responda com base nas <strong>últimas 4 semanas</strong>. Escala: <strong>0-Nunca · 1-Raramente · 2-Às vezes · 3-Frequentemente · 4-Sempre</strong></div>
+    <div class="alert a-blue">Baseline Mar/2026: Desatenção 22/36 (61%) · Hiperatividade 35/36 (97% SEVERA) · Total 57/72 (79%)</div>
+    <div class="q-progress">
+      <div class="q-progress-bar"><div class="q-progress-fill" id="asrs-prog-fill" style="width:0%"></div></div>
+      <span class="q-progress-txt" id="asrs-prog-txt">0 / 18 respondidas</span>
+    </div>
+    <div style="font-weight:600;font-size:12px;color:var(--slate);margin-bottom:10px;padding:8px;background:var(--panel);border-radius:6px;">PARTE A — Desatenção (9 itens)</div>
+    <div id="asrs-des-items"></div>
+    <div style="font-weight:600;font-size:12px;color:var(--slate);margin:14px 0 10px;padding:8px;background:var(--panel);border-radius:6px;">PARTE B — Hiperatividade/Impulsividade (9 itens)</div>
+    <div id="asrs-hiper-items"></div>
+    <div class="score-box" id="asrs-score-box">
+      <div class="score-item"><div class="score-lbl">Desatenção</div><div class="score-num" id="asrs-des-score">—/36</div><div class="score-pct" id="asrs-des-pct">—%</div></div>
+      <div class="score-sep"></div>
+      <div class="score-item"><div class="score-lbl">Hiperatividade</div><div class="score-num" id="asrs-hiper-score">—/36</div><div class="score-pct" id="asrs-hiper-pct">—%</div></div>
+      <div class="score-sep"></div>
+      <div class="score-item"><div class="score-lbl">Total ASRS</div><div class="score-num" id="asrs-total-score">—/72</div><div class="score-pct" id="asrs-total-pct">—%</div></div>
+    </div>
+  </div>
+
+  <!-- ── BRIEF-A ── -->
+  <div class="sub-panel" id="av-brief">
+    <div class="alert a-gold">Responda com base nas <strong>últimas 4 semanas</strong>. Escala: <strong>0-Nunca · 1-Às vezes · 2-Frequentemente · 3-Sempre</strong></div>
+    <div class="alert a-blue">Baseline: Flex.Cog. 88% SEVERA · Org/Plan 83% · Ctrl.Emocional 75% · MT Aplicada 75% · Iniciação 75% · Inibição 63% · Total 76%</div>
+    <div class="q-progress">
+      <div class="q-progress-bar"><div class="q-progress-fill" id="brief-prog-fill" style="width:0%"></div></div>
+      <span class="q-progress-txt" id="brief-prog-txt">0 / 14 respondidas</span>
+    </div>
+    <div id="brief-items"></div>
+    <div class="score-box">
+      <div class="score-item"><div class="score-lbl">Total BRIEF-A</div><div class="score-num" id="brief-total">—/42</div><div class="score-pct" id="brief-pct">—%</div></div>
+    </div>
+    <div style="margin-top:12px;">
+      <div class="card-title">Scores por Domínio</div>
+      <div class="domain-grid" id="brief-domains-output"></div>
+    </div>
+  </div>
+
+  <!-- ── RUMINAÇÃO ── -->
+  <div class="sub-panel" id="av-ruminacao">
+    <div class="alert a-purple">Avaliação de ruminação mental — achado crítico do baseline (TDAH 97% + déficit processamento emocional). Escala: <strong>1 (nunca) → 5 (sempre)</strong></div>
+    <div class="alert a-blue">Baseline: Diálogos internos por HORAS · Piora pós-estresse + sono REM ruim · Fácil interrupção por estímulo externo (diferencia de TOC)</div>
+    <div id="rum-items"></div>
+    <div class="card" style="margin-top:12px;">
+      <div class="card-title">Perguntas Abertas — Ruminação</div>
+      <div class="fi" style="margin-bottom:12px;"><label>Frequência semanal de episódios longos de ruminação (>30min)</label>
+        <select id="rum_freq" onchange="autoSave()">
+          <option value="">Selecione</option>
+          <option value="0">0 — Não ocorreu esta semana</option>
+          <option value="1">1-2 episódios</option>
+          <option value="3">3-4 episódios</option>
+          <option value="5">5+ episódios (diário)</option>
+        </select>
+      </div>
+      <div class="fi" style="margin-bottom:12px;"><label>Duração média dos episódios</label>
+        <select id="rum_dur" onchange="autoSave()">
+          <option value="">Selecione</option>
+          <option value="1">Menos de 30 minutos</option>
+          <option value="2">30 min – 1 hora</option>
+          <option value="3">1 – 2 horas</option>
+          <option value="4">Mais de 2 horas</option>
+        </select>
+      </div>
+      <div class="fi"><label>Observações sobre padrão de ruminação atual</label>
+        <textarea id="rum_obs" placeholder="Ex: Episódios estão menos frequentes. Ocorrem principalmente após conflitos ou sono ruim..." oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BIG FIVE ── -->
+  <div class="sub-panel" id="av-bigfive">
+    <div class="alert a-blue">Baseline: Abertura 2-3/10 · Conscienciosidade 9/10 · Extroversão 6-7/10 · Amabilidade 3-4/10 · Neuroticismo 5/10</div>
+    <div class="card">
+      <div class="card-title">Big Five — OCEAN (1–10)</div>
+      <div id="bigfive-scales"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Impacto Funcional (0 = sem impacto · 10 = impacto máximo)</div>
+      <div class="alert a-blue" style="margin-bottom:12px;">Baseline: Trabalho 6/10 · Relações 6/10 · Bem-estar 8/10 (motor ligado 🔴) · Sono 5/10</div>
+      <div id="impacto-scales"></div>
+    </div>
+  </div>
+
+  <!-- ── SENSORIAL ── -->
+  <div class="sub-panel" id="av-sensorial">
+    <div class="alert a-blue">Baseline Jun/2024: Observação 29 · Exploração 41 · Sensibilidade 42 (acima da média ⚠️) · Esquiva 39</div>
+    <div class="card">
+      <div class="card-title">Perfil Sensorial de Dunn (0–70)</div>
+      <div class="fg">
+        <div class="fi"><label>Observação (baseline: 29)</label><input type="number" id="s_obs" min="0" max="70" placeholder="Ex: 30" oninput="autoSave()"/></div>
+        <div class="fi"><label>Exploração (baseline: 41)</label><input type="number" id="s_exp" min="0" max="70" placeholder="Ex: 42" oninput="autoSave()"/></div>
+        <div class="fi"><label>Sensibilidade (baseline: 42)</label><input type="number" id="s_sen" min="0" max="70" placeholder="Ex: 40" oninput="autoSave()"/></div>
+        <div class="fi"><label>Esquiva (baseline: 39)</label><input type="number" id="s_esq" min="0" max="70" placeholder="Ex: 38" oninput="autoSave()"/></div>
+      </div>
+      <div class="fi" style="margin-top:12px;"><label>Observações sobre perfil sensorial atual</label>
+        <textarea id="s_obs_txt" placeholder="Mudanças percebidas em saturação sensorial, estratégias de esquiva, ambientes..." oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FARMACOLOGIA ── -->
+  <div class="sub-panel" id="av-farma">
+    <div class="alert a-gold">Registre os detalhes de cada medicação em uso. Histórico anterior: Ritalina LA 10mg 1×/dia (6h30) — tolerável mas subtratamento.</div>
+    <div class="card">
+      <div class="card-title">Medicação Atual</div>
+      <div style="font-size:11px;color:var(--slate);margin-bottom:12px;">Preencha uma linha por medicamento</div>
+      <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1.5fr 2fr;gap:8px;margin-bottom:8px;">
+        <span style="font-size:11px;font-weight:600;color:var(--slate);">Medicamento</span>
+        <span style="font-size:11px;font-weight:600;color:var(--slate);">Dose</span>
+        <span style="font-size:11px;font-weight:600;color:var(--slate);">Horário</span>
+        <span style="font-size:11px;font-weight:600;color:var(--slate);">Dias em uso</span>
+        <span style="font-size:11px;font-weight:600;color:var(--slate);">Efeitos percebidos</span>
+      </div>
+      <div id="med-rows"></div>
+      <button class="btn btn-ghost" style="margin-top:10px;font-size:12px;padding:7px 14px;" onclick="addMedRow()">+ Adicionar medicamento</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Eficácia & Tolerabilidade</div>
+      <div class="fg">
+        <div class="fi"><label>Eficácia geral percebida (1-10)</label><input type="number" id="farm_efic" min="1" max="10" placeholder="Ex: 6" oninput="autoSave()"/></div>
+        <div class="fi"><label>Tolerabilidade (1-10)</label><input type="number" id="farm_tol" min="1" max="10" placeholder="Ex: 8" oninput="autoSave()"/></div>
+        <div class="fi"><label>Horário do crash/rebote</label><input type="text" id="farm_crash" placeholder="Ex: 18h" oninput="autoSave()"/></div>
+        <div class="fi"><label>Sono (impacto da medicação)</label>
+          <select id="farm_sono" onchange="autoSave()">
+            <option value="">Selecione</option>
+            <option value="melhora">Melhora o sono</option>
+            <option value="neutro">Sem impacto</option>
+            <option value="piora_leve">Piora levemente</option>
+            <option value="piora_forte">Piora bastante</option>
+          </select>
+        </div>
+      </div>
+      <div class="fi" style="margin-top:12px;"><label>Observações farmacológicas</label>
+        <textarea id="farm_obs" placeholder="Mudanças percebidas desde o baseline, ajustes recentes, efeitos colaterais, janela terapêutica..." oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONTEXTO & GARMIN ── -->
+  <div class="sub-panel" id="av-contexto">
+    <div class="card">
+      <div class="card-title">Contexto da Reavaliação</div>
+      <div class="fg">
+        <div class="fi"><label>Data</label><input type="date" id="c_data" oninput="autoSave()"/></div>
+        <div class="fi"><label>Energia no dia (1-10)</label><input type="number" id="c_energia" min="1" max="10" placeholder="Ex: 7" oninput="validateField(this,1,10);autoSave()"/></div>
+        <div class="fi"><label>Horas de sono (noite anterior)</label><input type="number" id="c_sono" step="0.5" placeholder="Ex: 7.5" oninput="autoSave()"/></div>
+        <div class="fi"><label>Tomou medicação hoje?</label>
+          <select id="c_med_hoje" onchange="autoSave()">
+            <option value="">Selecione</option>
+            <option value="sim_no_horario">Sim, no horário habitual</option>
+            <option value="sim_atrasado">Sim, com atraso</option>
+            <option value="nao">Não tomou hoje</option>
+          </select>
+        </div>
+      </div>
+      <div class="fi" style="margin-top:12px;"><label>Contexto geral (estado emocional, eventos relevantes, mudanças de vida)</label>
+        <textarea id="c_ctx" placeholder="Ex: 6 meses de recuperação de burnout. Novo emprego com cultura saudável. Decisão sobre Medicina em análise. Lendo sobre IE..." oninput="autoSave()"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dados Garmin — Últimas 4 Semanas</div>
+      <div class="alert a-blue">Baseline: HRV 32ms · FC repouso 60bpm · Sleep Score 81 · Body Battery +53 · Estresse médio 28-35 · Pico sextas 36-40</div>
+      <div class="fg">
+        <div class="fi"><label>HRV Médio (ms)</label><input type="number" id="g_hrv" placeholder="Ex: 38" oninput="autoSave()"/><span class="field-hint">baseline: 32ms · meta: ≥45ms</span></div>
+        <div class="fi"><label>FC Repouso (bpm)</label><input type="number" id="g_fc" placeholder="Ex: 58" oninput="autoSave()"/><span class="field-hint">baseline: 60bpm</span></div>
+        <div class="fi"><label>Sleep Score Médio</label><input type="number" id="g_sleep" min="0" max="100" placeholder="Ex: 84" oninput="autoSave()"/><span class="field-hint">baseline: 81 · meta: ≥85</span></div>
+        <div class="fi"><label>Tempo REM Médio (min)</label><input type="number" id="g_rem" placeholder="Ex: 95" oninput="autoSave()"/><span class="field-hint">baseline: subótimo · meta: ≥90min</span></div>
+        <div class="fi"><label>Body Battery Manhã</label><input type="number" id="g_bb" min="0" max="100" placeholder="Ex: 72" oninput="autoSave()"/><span class="field-hint">baseline: +53pts</span></div>
+        <div class="fi"><label>Estresse Médio Geral</label><input type="number" id="g_stress" min="0" max="100" placeholder="Ex: 27" oninput="autoSave()"/><span class="field-hint">baseline: 28-35</span></div>
+        <div class="fi"><label>Pico de Estresse (valor)</label><input type="number" id="g_pico" min="0" max="100" placeholder="Ex: 34" oninput="autoSave()"/><span class="field-hint">baseline: 36-40</span></div>
+        <div class="fi"><label>Pico de Estresse (dia)</label><input type="text" id="g_pico_dia" placeholder="Ex: Sexta-feira" oninput="autoSave()"/></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Achados & Recomendações</div>
+      <div class="fi" style="margin-bottom:12px;"><label>Achados clínicos principais desta avaliação</label>
+        <textarea id="f_achados" rows="4" placeholder="Mudanças em relação ao baseline, novos padrões, progressos..." oninput="autoSave()"></textarea>
+      </div>
+      <div class="fi"><label>Recomendações</label>
+        <textarea id="f_rec" rows="4" placeholder="Ajustes medicamentosos, intervenções, metas para próxima avaliação (Dezembro 2026)..." oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </div>
+</div><!-- fim campo 1 -->
+
+
+<!-- ══════════════════════════════
+     CAMPO 2 — ANÁLISE
+══════════════════════════════ -->
+<div class="panel" id="panel-analise">
+  <div class="sub-tabs" id="subtabs-an">
+    <div class="sub-tab active" onclick="switchSub('an','evolucao',this)">Evolução Longitudinal</div>
+    <div class="sub-tab" onclick="switchSub('an','comp',this)">Comparação Detalhada</div>
+    <div class="sub-tab" onclick="switchSub('an','laudo',this);gerarLaudo()">Laudo Completo</div>
+  </div>
+
+  <!-- ── EVOLUÇÃO ── -->
+  <div class="sub-panel active" id="an-evolucao">
+    <div class="btn-row no-print" style="margin-bottom:16px;">
+      <button class="btn btn-gold" onclick="gerarGraficos()">↻ Atualizar Gráficos</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Evolução Cognitiva — Índices QI</div>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#1d4ed8"></div>QI Total</div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#b8860b"></div>ICV Verbal</div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#1a6b3c"></div>IMO Memória</div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#a02020"></div>IVP Velocidade</div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-qi"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Evolução TDAH — ASRS por Dimensão</div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chart-asrs"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Indicadores Fisiológicos — Garmin</div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chart-fisio"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Impacto Funcional & Bem-estar</div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chart-impacto"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── COMPARAÇÃO ── -->
+  <div class="sub-panel" id="an-comp">
+    <div class="btn-row no-print" style="margin-bottom:16px;">
+      <button class="btn btn-gold" onclick="gerarComparacao()">↻ Atualizar Comparação</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Baseline — Março 2026 (fixo)</div>
+      <div class="mg">
+        <div class="mb mb-good"><div class="mb-lbl">QI Total</div><div class="mb-val">118-123</div><div class="mb-sub">Médio-Superior</div></div>
+        <div class="mb mb-good"><div class="mb-lbl">ICV Verbal</div><div class="mb-val">125-130</div><div class="mb-sub">Muito Superior ⭐</div></div>
+        <div class="mb mb-critical"><div class="mb-lbl">ASRS Hiper.</div><div class="mb-val">97%</div><div class="mb-sub">SEVERA</div></div>
+        <div class="mb mb-critical"><div class="mb-lbl">BRIEF Total</div><div class="mb-val">76%</div><div class="mb-sub">comprometimento</div></div>
+        <div class="mb"><div class="mb-lbl">HRV</div><div class="mb-val">32ms</div><div class="mb-sub">subótimo (meta ≥45)</div></div>
+        <div class="mb"><div class="mb-lbl">Sleep Score</div><div class="mb-val">81</div><div class="mb-sub">/100</div></div>
+        <div class="mb mb-critical"><div class="mb-lbl">Bem-estar</div><div class="mb-val">8/10</div><div class="mb-sub">motor ligado 🔴</div></div>
+        <div class="mb"><div class="mb-lbl">Trabalho</div><div class="mb-val">6/10</div><div class="mb-sub">impacto</div></div>
+      </div>
+    </div>
+    <div id="comp-output">
+      <div class="alert a-gold">Clique em "Atualizar Comparação" para gerar a análise com os dados do Campo 1.</div>
+    </div>
+  </div>
+
+  <!-- ── LAUDO ── -->
+  <div class="sub-panel" id="an-laudo">
+    <div class="btn-row no-print" style="margin-bottom:16px;">
+      <button class="btn btn-gold" onclick="gerarLaudo()">↻ Atualizar Laudo</button>
+      <button class="btn btn-ghost" onclick="window.print()">🖨 Imprimir / PDF</button>
+    </div>
+    <div id="laudo-output">
+      <div class="alert a-gold">Clique em "Atualizar Laudo" para gerar o documento.</div>
+    </div>
+  </div>
+</div><!-- fim campo 2 -->
+
+</main>
+
+<script>
+// ════════════════════════════════════════════
+// STATE & STORAGE
+// ════════════════════════════════════════════
+const STORE_KEY = 'neuro_sessions_v4';
+let sessions = [];
+let currentSessionId = null;
+let saveTimer = null;
+let chartInstances = {};
+let timerIntervals = {};
+
+function loadStore(){ sessions = JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); }
+function saveStore(){ localStorage.setItem(STORE_KEY, JSON.stringify(sessions)); }
+
+function getCurrentSession(){ return sessions.find(s=>s.id===currentSessionId)||null; }
+
+function autoSave(){
+  if(!currentSessionId) return;
+  const ind = document.getElementById('saveIndicator');
+  ind.textContent='● Salvando...'; ind.className='save-indicator saving';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    const sess = getCurrentSession();
+    if(sess){ sess.data = collectFormData(); sess.updatedAt = new Date().toISOString(); saveStore(); }
+    ind.textContent='● Salvo automaticamente'; ind.className='save-indicator saved';
+    setTimeout(()=>{ ind.textContent='● Salvo'; ind.className='save-indicator'; }, 2500);
+  }, 800);
+}
+
+// ════════════════════════════════════════════
+// SESSION MANAGEMENT
+// ════════════════════════════════════════════
+function abrirModal(){
+  document.getElementById('modal-new-session').classList.add('show');
+  document.getElementById('new-data').valueAsDate=new Date();
+}
+function fecharModal(){ document.getElementById('modal-new-session').classList.remove('show'); }
+
+function criarSessao(){
+  const nome = document.getElementById('new-nome').value||'Juliana';
+  const tipo = document.getElementById('new-tipo').value;
+  const data = document.getElementById('new-data').value;
+  const tipoMap={baseline:'Baseline',
+    '3meses':'3 Meses','6meses':'6 Meses','9meses':'9 Meses','12meses':'12 Meses',outro:'Outro'};
+  const sess={
+    id: Date.now().toString(),
+    nome, tipo, data,
+    label:`${nome} — ${tipoMap[tipo]||tipo} (${fmtDate(data)})`,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    data: {}
+  };
+  sessions.push(sess);
+  saveStore();
+  fecharModal();
+  renderSessionSelector();
+  document.getElementById('session-selector').value = sess.id;
+  carregarSessao();
+}
+
+function duplicarSessao(){
+  if(!currentSessionId){ alert('Selecione uma sessão primeiro.'); return; }
+  const orig = getCurrentSession();
+  const nova = JSON.parse(JSON.stringify(orig));
+  nova.id = Date.now().toString();
+  nova.label = orig.label+' (cópia)';
+  nova.createdAt = new Date().toISOString();
+  nova.updatedAt = new Date().toISOString();
+  sessions.push(nova);
+  saveStore();
+  renderSessionSelector();
+  document.getElementById('session-selector').value = nova.id;
+  carregarSessao();
+}
+
+function confirmarExcluir(){
+  if(!currentSessionId){ alert('Selecione uma sessão.'); return; }
+  if(!confirm('Excluir esta sessão permanentemente?')) return;
+  sessions = sessions.filter(s=>s.id!==currentSessionId);
+  saveStore();
+  currentSessionId=null;
+  renderSessionSelector();
+  limparFormulario();
+}
+
+function renderSessionSelector(){
+  const sel = document.getElementById('session-selector');
+  sel.innerHTML='<option value="">— selecione ou crie nova —</option>';
+  sessions.forEach(s=>{
+    const opt=document.createElement('option');
+    opt.value=s.id; opt.textContent=s.label;
+    sel.appendChild(opt);
+  });
+  if(currentSessionId) sel.value=currentSessionId;
+}
+
+function carregarSessao(){
+  const id = document.getElementById('session-selector').value;
+  if(!id){ currentSessionId=null; return; }
+  currentSessionId=id;
+  const sess=getCurrentSession();
+  if(sess&&sess.data) populateFormData(sess.data);
+}
+
+// ════════════════════════════════════════════
+// FORM COLLECT / POPULATE
+// ════════════════════════════════════════════
+function collectFormData(){
+  return {
+    t_dsf:gv('t_dsf'),t_dsb:gv('t_dsb'),t_stroop:gv('t_stroop'),
+    t_flu:gv('t_flu'),t_flu_obs:gv('t_flu_obs'),t_cpt:gv('t_cpt'),t_cpt_err:gv('t_cpt_err'),
+    t_tmta:gv('t_tmta'),t_tmtb:gv('t_tmtb'),t_arit:gv('t_arit'),t_arit_t:gv('t_arit_t'),t_anal:gv('t_anal'),
+    qi_total:gv('qi_total'),qi_icv:gv('qi_icv'),qi_imo:gv('qi_imo'),qi_irp:gv('qi_irp'),qi_ivp:gv('qi_ivp'),qi_gap:gv('qi_gap'),qi_obs:gv('qi_obs'),
+    asrs_des:gasrs('des'),asrs_hiper:gasrs('hiper'),
+    brief_total:gbrief(),brief_domains:getBriefDomains(),
+    rum_freq:gv('rum_freq'),rum_dur:gv('rum_dur'),rum_obs:gv('rum_obs'),rum_items:getRumItems(),
+    bf_aber:gsv('bf_aber'),bf_cons:gsv('bf_cons'),bf_ext:gsv('bf_ext'),bf_ama:gsv('bf_ama'),bf_neu:gsv('bf_neu'),
+    i_trab:gsv('i_trab'),i_rel:gsv('i_rel'),i_bem:gsv('i_bem'),i_sono:gsv('i_sono'),
+    s_obs:gv('s_obs'),s_exp:gv('s_exp'),s_sen:gv('s_sen'),s_esq:gv('s_esq'),s_obs_txt:gv('s_obs_txt'),
+    farm_efic:gv('farm_efic'),farm_tol:gv('farm_tol'),farm_crash:gv('farm_crash'),farm_sono:gv('farm_sono'),farm_obs:gv('farm_obs'),
+    c_data:gv('c_data'),c_energia:gv('c_energia'),c_sono:gv('c_sono'),c_med_hoje:gv('c_med_hoje'),c_ctx:gv('c_ctx'),
+    g_hrv:gv('g_hrv'),g_fc:gv('g_fc'),g_sleep:gv('g_sleep'),g_rem:gv('g_rem'),g_bb:gv('g_bb'),g_stress:gv('g_stress'),g_pico:gv('g_pico'),g_pico_dia:gv('g_pico_dia'),
+    f_achados:gv('f_achados'),f_rec:gv('f_rec'),
+  };
+}
+
+function populateFormData(d){
+  const fields=['t_dsf','t_dsb','t_stroop','t_flu','t_flu_obs','t_cpt','t_cpt_err','t_tmta','t_tmtb','t_arit','t_arit_t','t_anal',
+    'qi_total','qi_icv','qi_imo','qi_irp','qi_ivp','qi_gap','qi_obs',
+    'rum_freq','rum_dur','rum_obs','s_obs','s_exp','s_sen','s_esq','s_obs_txt',
+    'farm_efic','farm_tol','farm_crash','farm_sono','farm_obs',
+    'c_data','c_energia','c_sono','c_med_hoje','c_ctx',
+    'g_hrv','g_fc','g_sleep','g_rem','g_bb','g_stress','g_pico','g_pico_dia',
+    'f_achados','f_rec'];
+  fields.forEach(f=>{ const el=document.getElementById(f); if(el&&d[f]!=null) el.value=d[f]; });
+  // Scales
+  const scaleFields={bf_aber:d.bf_aber,bf_cons:d.bf_cons,bf_ext:d.bf_ext,bf_ama:d.bf_ama,bf_neu:d.bf_neu,i_trab:d.i_trab,i_rel:d.i_rel,i_bem:d.i_bem,i_sono:d.i_sono};
+  Object.entries(scaleFields).forEach(([id,val])=>{ if(val) setSV(id,val); });
+  // ASRS
+  if(d.asrs_des!=null||d.asrs_hiper!=null){
+    // restore via raw item values not available - just recalc from scores
+  }
+  calcScores();
+}
+
+function limparFormulario(){
+  document.querySelectorAll('input:not([type=date]),select,textarea').forEach(el=>{if(!el.id.startsWith('new-'))el.value='';});
+  document.querySelectorAll('.sc-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.sc-val').forEach(v=>v.textContent='—');
+  document.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.q-item').forEach(i=>i.classList.remove('answered'));
+  calcScores();
+}
+
+// ════════════════════════════════════════════
+// TIMERS
+// ════════════════════════════════════════════
+function startTimer(id, duration){
+  if(timerIntervals[id]) clearInterval(timerIntervals[id]);
+  let rem=duration;
+  const el=document.getElementById('timer-'+id);
+  el.className='timer-display running';
+  timerIntervals[id]=setInterval(()=>{
+    rem--;
+    el.textContent=rem+'s';
+    if(rem<=5) el.className='timer-display urgent';
+    if(rem<=0){ clearInterval(timerIntervals[id]); el.textContent='TEMPO!'; el.className='timer-display done'; }
+  },1000);
+}
+function resetTimer(id,duration){ clearInterval(timerIntervals[id]); const el=document.getElementById('timer-'+id); el.textContent=duration+'s'; el.className='timer-display'; }
+function startTimerUp(id){
+  if(timerIntervals[id]) clearInterval(timerIntervals[id]);
+  let sec=0;
+  const el=document.getElementById('timer-'+id);
+  el.className='timer-display running';
+  timerIntervals[id]=setInterval(()=>{ sec++; el.textContent=sec+'s'; },1000);
+}
+function stopTimerUp(id,fieldId){
+  clearInterval(timerIntervals[id]);
+  const el=document.getElementById('timer-'+id);
+  el.className='timer-display done';
+  const field=document.getElementById(fieldId);
+  if(field&&!field.value) field.value=parseInt(el.textContent);
+  autoSave();
+}
+
+// ════════════════════════════════════════════
+// VALIDATION
+// ════════════════════════════════════════════
+function validateField(el,min,max){
+  const v=Number(el.value);
+  if(el.value===''){ el.className=el.className.replace(' err','').replace(' ok',''); return; }
+  if(v<min||v>max){ el.classList.remove('ok'); el.classList.add('err'); }
+  else { el.classList.remove('err'); el.classList.add('ok'); }
+  const errEl=document.getElementById('err_'+el.id);
+  if(errEl) errEl.classList.toggle('show',v<min||v>max);
+}
+
+// ════════════════════════════════════════════
+// QUESTIONNAIRE BUILD
+// ════════════════════════════════════════════
+const asrsDesQ=[
+  "Tenho dificuldade em manter a atenção em tarefas chatas ou repetitivas no trabalho",
+  "Cometo erros por descuido em projetos ou tarefas",
+  "Tenho dificuldade em organizar tarefas com múltiplos passos",
+  "Evito ou acho difícil começar tarefas que exigem muito esforço mental",
+  "Perco ou esqueço onde coloco coisas necessárias",
+  "Sou facilmente distraída por barulhos ou atividades ao redor",
+  "Tenho dificuldade em lembrar de compromissos ou obrigações",
+  "Não presto atenção quando alguém fala diretamente comigo",
+  "Não consigo terminar tarefas quando as começo",
+];
+const asrsHiperQ=[
+  "Fico mexendo as mãos ou os pés, ou me remexo na cadeira",
+  "Levanto do lugar em situações em que deveria ficar sentada",
+  "Sinto sensação de inquietação ou agitação interna",
+  "Tenho dificuldade em me envolver em atividades de lazer de forma tranquila",
+  "Sinto que estou sempre em movimento, como se tivesse um motor ligado",
+  "Falo demais em situações sociais",
+  "Termino as frases dos outros antes que eles as completem",
+  "Tenho dificuldade em aguardar minha vez em filas ou conversas",
+  "Interrompo os outros quando estão falando ou fazendo algo",
+];
+const briefQ=[
+  {cat:"Inibição",q:"Digo ou faço coisas sem pensar antes"},
+  {cat:"Inibição",q:"Reajo de forma exagerada a situações menores"},
+  {cat:"Flexibilidade",q:"Tenho dificuldade quando meus planos mudam de última hora"},
+  {cat:"Flexibilidade",q:"Fico presa em uma forma de resolver mesmo quando não funciona"},
+  {cat:"Flexibilidade",q:"Me incomoda muito quando as coisas não saem como planejei"},
+  {cat:"Ctrl. Emocional",q:"Minhas frustrações são desproporcionais ao problema"},
+  {cat:"Ctrl. Emocional",q:"Tenho dificuldade em 'deixar pra lá' quando algo me incomoda"},
+  {cat:"Iniciação",q:"Procrastino — começo tarefas importantes no último momento"},
+  {cat:"Iniciação",q:"Tenho dificuldade de iniciar tarefas mesmo quando quero"},
+  {cat:"Iniciação",q:"Preciso de alguém para me ajudar a começar uma tarefa"},
+  {cat:"Memória de Trab.",q:"Esqueço o que ia fazer quando sou interrompida"},
+  {cat:"Memória de Trab.",q:"Perco o fio da meada no meio de tarefas complexas"},
+  {cat:"Org/Planejamento",q:"Subestimo o tempo ou a complexidade de projetos"},
+  {cat:"Org/Planejamento",q:"Deixo tarefas importantes para a última hora sem querer"},
+];
+const rumQ=[
+  "Minha mente fica girando com pensamentos mesmo quando quero descansar",
+  "Revisite mentalmente conversas ou situações passadas repetidamente",
+  "Tenho diálogos imaginários que duram muito tempo (>30 min)",
+  "Os pensamentos acelerados pioram em baixa estimulação (banho, dirigindo)",
+  "Os pensamentos acelerados pioram após dias estressantes",
+  "Consigo interromper os pensamentos quando surge estímulo externo",
+];
+
+function buildASRS(){
+  buildQGroup('asrs-des-items', asrsDesQ, 'des', 0);
+  buildQGroup('asrs-hiper-items', asrsHiperQ, 'hiper', 9);
+}
+function buildBRIEF(){
+  const c=document.getElementById('brief-items'); let lastCat='';
+  briefQ.forEach((item,i)=>{
+    if(item.cat!==lastCat){
+      const h=document.createElement('div');
+      h.style.cssText='font-weight:700;font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;padding:8px;background:var(--panel);border-radius:6px;margin:12px 0 8px;';
+      h.textContent=item.cat; c.appendChild(h); lastCat=item.cat;
+    }
+    c.appendChild(buildQItem(item.q,i+1,'brief',i,['0 — Nunca','1 — Às vezes','2 — Frequentemente','3 — Sempre']));
+  });
+}
+function buildRuminacao(){
+  const c=document.getElementById('rum-items');
+  rumQ.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='rum-item';
+    div.innerHTML=`<div class="q-num">R${i+1}</div><div class="rum-text">${q}</div>
+      <div class="rum-scale">${[1,2,3,4,5].map(v=>`<button class="rum-btn" data-id="rum${i}" data-val="${v}" onclick="selectRum(this)">${v}</button>`).join('')}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--slate);"><span>Nunca</span><span>Sempre</span></div>`;
+    c.appendChild(div);
+  });
+}
+function buildQGroup(containerId, questions, group, startNum){
+  const c=document.getElementById(containerId);
+  questions.forEach((q,i)=>c.appendChild(buildQItem(q,startNum+i+1,group,i,['0 — Nunca','1 — Raramente','2 — Às vezes','3 — Frequentemente','4 — Sempre'])));
+}
+function buildQItem(text,num,group,idx,opts){
+  const div=document.createElement('div');
+  div.className='q-item'; div.id=`qi-${group}-${idx}`;
+  div.innerHTML=`<div class="q-num">Q${num}</div><div class="q-text">${text}</div>
+    <div class="q-opts">${opts.map((o,v)=>`<div class="q-opt" data-group="${group}" data-idx="${idx}" data-val="${v}" onclick="selectOpt(this)">${o}</div>`).join('')}</div>`;
+  return div;
+}
+function selectOpt(el){
+  const {group,idx}=el.dataset;
+  document.querySelectorAll(`.q-opt[data-group="${group}"][data-idx="${idx}"]`).forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById(`qi-${group}-${idx}`)?.classList.add('answered');
+  calcScores(); autoSave();
+}
+function selectRum(el){
+  const id=el.dataset.id;
+  document.querySelectorAll(`.rum-btn[data-id="${id}"]`).forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel'); autoSave();
+}
+function setSV(id,val){
+  document.querySelectorAll(`.sc-btn[data-id="${id}"]`).forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.val)===parseInt(val)));
+  const sv=document.getElementById('sv_'+id); if(sv) sv.textContent=val;
+}
+
+// ════════════════════════════════════════════
+// SCALE BUILDER
+// ════════════════════════════════════════════
+function buildScale(cId,domains,max,base){
+  const c=document.getElementById(cId); if(!c) return; c.innerHTML='';
+  domains.forEach(d=>{
+    const row=document.createElement('div'); row.className='scale-row';
+    const lbl=document.createElement('span'); lbl.className='scale-lbl';
+    lbl.innerHTML=`${d.label} <span class="base-ref">base: ${base[d.id]||'—'}</span>`;
+    row.appendChild(lbl);
+    const wrap=document.createElement('div'); wrap.className='sc-wrap';
+    for(let i=1;i<=max;i++){
+      const btn=document.createElement('button'); btn.className='sc-btn';
+      btn.textContent=i; btn.dataset.id=d.id; btn.dataset.val=i;
+      btn.onclick=function(){
+        document.querySelectorAll(`.sc-btn[data-id="${d.id}"]`).forEach(b=>b.classList.remove('sel'));
+        this.classList.add('sel'); document.getElementById('sv_'+d.id).textContent=i; autoSave();
+      };
+      wrap.appendChild(btn);
+    }
+    const val=document.createElement('span'); val.className='sc-val'; val.id='sv_'+d.id; val.textContent='—';
+    row.appendChild(wrap); row.appendChild(val); c.appendChild(row);
+  });
+}
+function buildAllScales(){
+  buildScale('bigfive-scales',[
+    {id:'bf_aber',label:'Abertura a Experiências'},{id:'bf_cons',label:'Conscienciosidade'},
+    {id:'bf_ext',label:'Extroversão'},{id:'bf_ama',label:'Amabilidade'},{id:'bf_neu',label:'Neuroticismo'},
+  ],10,{bf_aber:2,bf_cons:9,bf_ext:6,bf_ama:4,bf_neu:5});
+  buildScale('impacto-scales',[
+    {id:'i_trab',label:'Trabalho/Produtividade'},{id:'i_rel',label:'Relações Interpessoais'},
+    {id:'i_bem',label:'Bem-estar (motor ligado)'},{id:'i_sono',label:'Qualidade do Sono'},
+  ],10,{i_trab:6,i_rel:6,i_bem:8,i_sono:5});
+}
+
+// ════════════════════════════════════════════
+// MED ROWS
+// ════════════════════════════════════════════
+let medCount=0;
+function addMedRow(){
+  medCount++;
+  const row=document.createElement('div');
+  row.style.cssText='display:grid;grid-template-columns:1.5fr 1fr 1fr 1.5fr 2fr;gap:8px;margin-bottom:8px;align-items:start;';
+  row.id='med-row-'+medCount;
+  row.innerHTML=`
+    <input type="text" placeholder="Ex: Ritalina LA" oninput="autoSave()"/>
+    <input type="text" placeholder="Ex: 10mg" oninput="autoSave()"/>
+    <input type="text" placeholder="Ex: 6h30" oninput="autoSave()"/>
+    <input type="text" placeholder="Ex: 60 dias" oninput="autoSave()"/>
+    <input type="text" placeholder="Ex: melhora controle, crash 18h" oninput="autoSave()"/>`;
+  document.getElementById('med-rows').appendChild(row);
+}
+
+// ════════════════════════════════════════════
+// SCORE CALCULATIONS
+// ════════════════════════════════════════════
+function gasrs(g){ let t=0,c=0; document.querySelectorAll(`.q-opt[data-group="${g}"].sel`).forEach(el=>{t+=parseInt(el.dataset.val);c++;}); return c>0?t:null; }
+function gbrief(){ let t=0,c=0; document.querySelectorAll('.q-opt[data-group="brief"].sel').forEach(el=>{t+=parseInt(el.dataset.val);c++;}); return c>0?t:null; }
+function getBriefDomains(){
+  const cats={Inibição:[0,1],Flexibilidade:[2,3,4],'Ctrl. Emocional':[5,6],Iniciação:[7,8,9],'Memória de Trab.':[10,11],'Org/Planejamento':[12,13]};
+  const result={};
+  Object.entries(cats).forEach(([cat,idxs])=>{
+    let t=0,c=0;
+    idxs.forEach(idx=>{
+      const sel=document.querySelector(`.q-opt[data-group="brief"][data-idx="${idx}"].sel`);
+      if(sel){t+=parseInt(sel.dataset.val);c++;}
+    });
+    result[cat]=c===idxs.length?t:null;
+  });
+  return result;
+}
+function getRumItems(){
+  const r={};
+  rumQ.forEach((_,i)=>{ const s=document.querySelector(`.rum-btn[data-id="rum${i}"].sel`); if(s) r[i]=parseInt(s.dataset.val); });
+  return r;
+}
+
+function calcScores(){
+  const des=gasrs('des'), hiper=gasrs('hiper'), brief=gbrief();
+  const briefMax=14*3;
+  const asrsDesCount=document.querySelectorAll('.q-opt[data-group="des"].sel').length;
+  const asrsHiperCount=document.querySelectorAll('.q-opt[data-group="hiper"].sel').length;
+  const briefCount=document.querySelectorAll('.q-opt[data-group="brief"].sel').length;
+
+  // ASRS
+  document.getElementById('asrs-des-score').textContent=asrsDesCount===9?`${des}/36`:'—/36';
+  document.getElementById('asrs-hiper-score').textContent=asrsHiperCount===9?`${hiper}/36`:'—/36';
+  const total=(des!=null&&hiper!=null)?des+hiper:null;
+  document.getElementById('asrs-total-score').textContent=total!=null?`${total}/72`:'—/72';
+  const dp=asrsDesCount===9?Math.round(des/36*100):null;
+  const hp=asrsHiperCount===9?Math.round(hiper/36*100):null;
+  const tp=total!=null?Math.round(total/72*100):null;
+  document.getElementById('asrs-des-pct').textContent=dp!=null?`${dp}% (base: 61%)`:  '—%';
+  document.getElementById('asrs-hiper-pct').textContent=hp!=null?`${hp}% (base: 97%)`:'—%';
+  const tpEl=document.getElementById('asrs-total-pct');
+  tpEl.textContent=tp!=null?`${tp}% (base: 79%)`:'—%';
+  if(tp!=null) tpEl.className='score-pct '+(tp>=70?'high':tp>=40?'mid':'low');
+
+  // ASRS progress
+  const aTotal=asrsDesCount+asrsHiperCount;
+  document.getElementById('asrs-prog-fill').style.width=(aTotal/18*100)+'%';
+  document.getElementById('asrs-prog-txt').textContent=`${aTotal} / 18 respondidas`;
+
+  // BRIEF
+  document.getElementById('brief-total').textContent=briefCount===14?`${brief}/${briefMax}`:'—/42';
+  const bp=briefCount===14?Math.round(brief/briefMax*100):null;
+  const bpEl=document.getElementById('brief-pct');
+  bpEl.textContent=bp!=null?`${bp}% (base: 76%)`:'—%';
+  if(bp!=null) bpEl.className='score-pct '+(bp>=70?'high':bp>=40?'mid':'low');
+  document.getElementById('brief-prog-fill').style.width=(briefCount/14*100)+'%';
+  document.getElementById('brief-prog-txt').textContent=`${briefCount} / 14 respondidas`;
+
+  // BRIEF domains
+  const bd=getBriefDomains();
+  const bdBaseline={Inibição:63,Flexibilidade:88,'Ctrl. Emocional':75,Iniciação:75,'Memória de Trab.':75,'Org/Planejamento':83};
+  const bdEl=document.getElementById('brief-domains-output');
+  if(bdEl){
+    bdEl.innerHTML=Object.entries(bd).map(([cat,val])=>{
+      const maxCat=cat==='Iniciação'?9:cat==='Memória de Trab.'?6:cat==='Org/Planejamento'?6:cat==='Ctrl. Emocional'?6:cat==='Flexibilidade'?9:6;
+      const pct=val!=null?Math.round(val/maxCat*100):null;
+      const base=bdBaseline[cat];
+      const diff=pct!=null?pct-base:null;
+      return `<div class="domain-box">
+        <div class="domain-name">${cat}</div>
+        <div class="domain-val">${pct!=null?pct+'%':'—'}</div>
+        <div class="domain-compare">${diff!=null?`${diff>0?'▲ +'+diff:diff<0?'▼ '+diff:'= 0'}% vs base ${base}%`:`base: ${base}%`}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+function gv(id){ return document.getElementById(id)?.value||null; }
+function gn(id){ const v=document.getElementById(id)?.value; return v?Number(v):null; }
+function gsv(id){ const s=document.querySelector(`.sc-btn[data-id="${id}"].sel`); return s?parseInt(s.dataset.val):null; }
+function classQI(v){ if(!v)return'—'; if(v>=130)return'Muito Superior'; if(v>=120)return'Superior'; if(v>=110)return'Médio-Superior'; if(v>=90)return'Médio'; return'Limítrofe'; }
+function pctil(v){ if(!v)return'—'; if(v>=130)return'>98'; if(v>=125)return'95'; if(v>=120)return'91'; if(v>=115)return'84'; if(v>=110)return'75'; if(v>=105)return'63'; return'<50'; }
+function fmtDate(s){ if(!s)return'—'; const[y,m,d]=s.split('-'); return`${d}/${m}/${y}`; }
+function delta(b,a,hib=true){
+  if(b==null||a==null)return'<span class="d-eq">—</span>';
+  const d=Number(a)-Number(b); const good=hib?d>0:d<0;
+  const cls=d===0?'d-eq':(good?'d-up':'d-dn');
+  return`<span class="${cls}">${d>0?'▲':'▼'} ${d>0?'+':''}${d}</span>`;
+}
+function rCls(b,a,hib=true){
+  if(b==null||a==null)return'';
+  const d=Number(a)-Number(b); if(Math.abs(d)<3)return'';
+  return(hib?d>0:d<0)?'improved':'declined';
+}
+
+// ════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════
+function switchMain(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='analise'){ gerarGraficos(); gerarComparacao(); }
+}
+function switchSub(panel,id,elRef){
+  document.querySelectorAll(`#panel-${panel} .sub-panel`).forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll(`#panel-${panel} .sub-tab`).forEach(t=>t.classList.remove('active'));
+  document.getElementById(`${panel}-${id}`).classList.add('active');
+  // find correct tab
+  const tabs=document.querySelectorAll(`#panel-${panel} > .sub-tabs .sub-tab`);
+  tabs.forEach(t=>{ if(t.textContent.trim().toLowerCase().startsWith(id.substring(0,3))||t===elRef) t.classList.add('active'); });
+  if(elRef) elRef.classList.add('active');
+}
+
+// ════════════════════════════════════════════
+// CHARTS
+// ════════════════════════════════════════════
+function destroyChart(id){ if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];} }
+
+function gerarGraficos(){
+  const labels=['Mar/2026 (baseline)','Set/2026 (atual)'];
+  const qi2=gn('qi_total'), icv2=gn('qi_icv'), imo2=gn('qi_imo'), ivp2=gn('qi_ivp');
+  const des2=gasrs('des'), hiper2=gasrs('hiper');
+  const hrv2=gn('g_hrv'), sleep2=gn('g_sleep'), bb2=gn('g_bb');
+  const itrab2=gsv('i_trab'), ibem2=gsv('i_bem'), irel2=gsv('i_rel'), isono2=gsv('i_sono');
+
+  const opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}}}};
+
+  // QI Chart
+  destroyChart('qi');
+  chartInstances['qi']=new Chart(document.getElementById('chart-qi'),{type:'line',
+    data:{labels,datasets:[
+      {label:'QI Total',data:[120,qi2],borderColor:'#1d4ed8',backgroundColor:'rgba(29,78,216,.1)',tension:.3,fill:true},
+      {label:'ICV Verbal',data:[127,icv2],borderColor:'#b8860b',backgroundColor:'rgba(184,134,11,.05)',tension:.3},
+      {label:'IMO Memória',data:[122,imo2],borderColor:'#1a6b3c',tension:.3},
+      {label:'IVP Velocidade',data:[107,ivp2],borderColor:'#a02020',tension:.3},
+    ]},options:{...opts,scales:{y:{min:90,max:140,title:{display:true,text:'Índice'}},
+      x:{grid:{color:'rgba(0,0,0,.05)'}}}
+    }});
+
+  // ASRS Chart
+  destroyChart('asrs');
+  chartInstances['asrs']=new Chart(document.getElementById('chart-asrs'),{type:'bar',
+    data:{labels,datasets:[
+      {label:'Desatenção (/36)',data:[22,des2],backgroundColor:['rgba(29,78,216,.6)','rgba(29,78,216,.9)']},
+      {label:'Hiperatividade (/36)',data:[35,hiper2],backgroundColor:['rgba(160,32,32,.6)','rgba(160,32,32,.9)']},
+    ]},options:{...opts,scales:{y:{min:0,max:36,title:{display:true,text:'Pontos'}}}}});
+
+  // Fisiológico Chart
+  destroyChart('fisio');
+  chartInstances['fisio']=new Chart(document.getElementById('chart-fisio'),{type:'line',
+    data:{labels,datasets:[
+      {label:'HRV (ms)',data:[32,hrv2],borderColor:'#1d4ed8',tension:.3,yAxisID:'y'},
+      {label:'Sleep Score',data:[81,sleep2],borderColor:'#1a6b3c',tension:.3,yAxisID:'y2'},
+      {label:'Body Battery',data:[53,bb2],borderColor:'#b8860b',tension:.3,yAxisID:'y2'},
+    ]},options:{...opts,scales:{
+      y:{position:'left',title:{display:true,text:'HRV (ms)'},min:20,max:60},
+      y2:{position:'right',title:{display:true,text:'Score'},min:40,max:100,grid:{drawOnChartArea:false}},
+    }}});
+
+  // Impacto Chart
+  destroyChart('impacto');
+  chartInstances['impacto']=new Chart(document.getElementById('chart-impacto'),{type:'line',
+    data:{labels,datasets:[
+      {label:'Trabalho (/10)',data:[6,itrab2],borderColor:'#1d4ed8',tension:.3},
+      {label:'Bem-estar (/10)',data:[8,ibem2],borderColor:'#a02020',tension:.3},
+      {label:'Relações (/10)',data:[6,irel2],borderColor:'#1a6b3c',tension:.3},
+      {label:'Sono (/10)',data:[5,isono2],borderColor:'#b8860b',tension:.3},
+    ]},options:{...opts,scales:{y:{min:0,max:10,title:{display:true,text:'Impacto (0=nenhum 10=máximo)'}}}
+    }});
+}
+
+// ════════════════════════════════════════════
+// COMPARAÇÃO
+// ════════════════════════════════════════════
+function gerarComparacao(){
+  const asDes=gasrs('des'), asHiper=gasrs('hiper');
+  const asTotal=(asDes!=null&&asHiper!=null)?asDes+asHiper:null;
+  const briefT=gbrief();
+  const bd=getBriefDomains();
+  const base={qi:120,icv:127,imo:122,irp:117,ivp:107,gap:35,dsf:7,dsb:6,stroop:8,flu:11,cpt:11,
+    asrsDes:22,asrsHiper:35,asrsTotal:57,
+    bInib:Math.round(.63*6),bFlex:Math.round(.88*9),bEmo:Math.round(.75*6),bInic:Math.round(.75*9),bWm:Math.round(.75*6),bPlan:Math.round(.83*6),bTotal:42,
+    iTrab:6,iRel:6,iBem:8,iSono:5,hrv:32,fc:60,sleep:81,bb:53,stress:35};
+  const a={qi:gn('qi_total'),icv:gn('qi_icv'),imo:gn('qi_imo'),irp:gn('qi_irp'),ivp:gn('qi_ivp'),gap:gn('qi_gap'),
+    dsf:gn('t_dsf'),dsb:gn('t_dsb'),stroop:gn('t_stroop'),flu:gn('t_flu'),cpt:gn('t_cpt'),
+    asrsDes:asDes,asrsHiper:asHiper,asrsTotal,
+    bFlex:bd['Flexibilidade'],bEmo:bd['Ctrl. Emocional'],bInic:bd['Iniciação'],bWm:bd['Memória de Trab.'],bPlan:bd['Org/Planejamento'],bInib:bd['Inibição'],bTotal:briefT,
+    iTrab:gsv('i_trab'),iRel:gsv('i_rel'),iBem:gsv('i_bem'),iSono:gsv('i_sono'),
+    hrv:gn('g_hrv'),fc:gn('g_fc'),sleep:gn('g_sleep'),bb:gn('g_bb'),stress:gn('g_stress')};
+
+  const rows=[
+    ['COGNITIVO',null,null,null,true],
+    ['QI Total',base.qi,a.qi,true],['ICV Verbal',base.icv,a.icv,true],['IMO Memória',base.imo,a.imo,true],
+    ['IRP Perceptual',base.irp,a.irp,true],['IVP Velocidade',base.ivp,a.ivp,true],['Gap Funcional',base.gap,a.gap,false],
+    ['Digit Span Forward',base.dsf,a.dsf,true],['Digit Span Backward',base.dsb,a.dsb,true],
+    ['Stroop (/8)',base.stroop,a.stroop,true],['Fluência Semântica',base.flu,a.flu,true],['Atenção (/11)',base.cpt,a.cpt,true],
+    ['TDAH — ASRS',null,null,null,true],
+    ['ASRS Desatenção (/36)',base.asrsDes,a.asrsDes,false],['ASRS Hiperatividade (/36)',base.asrsHiper,a.asrsHiper,false],['ASRS Total (/72)',base.asrsTotal,a.asrsTotal,false],
+    ['TDAH — BRIEF-A (por domínio)',null,null,null,true],
+    ['Inibição',base.bInib,a.bInib,false],['Flexibilidade Cognitiva',base.bFlex,a.bFlex,false],
+    ['Controle Emocional',base.bEmo,a.bEmo,false],['Iniciação',base.bInic,a.bInic,false],
+    ['Memória de Trabalho',base.bWm,a.bWm,false],['Org/Planejamento',base.bPlan,a.bPlan,false],
+    ['Total BRIEF-A (/42)',base.bTotal,a.bTotal,false],
+    ['IMPACTO FUNCIONAL',null,null,null,true],
+    ['Trabalho (/10)',base.iTrab,a.iTrab,false],['Relações (/10)',base.iRel,a.iRel,false],
+    ['Bem-estar (/10)',base.iBem,a.iBem,false],['Sono (/10)',base.iSono,a.iSono,false],
+    ['FISIOLÓGICO — GARMIN',null,null,null,true],
+    ['HRV (ms)',base.hrv,a.hrv,true],['FC Repouso (bpm)',base.fc,a.fc,false],
+    ['Sleep Score (/100)',base.sleep,a.sleep,true],['Body Battery Manhã',base.bb,a.bb,true],['Estresse Médio',base.stress,a.stress,false],
+  ];
+
+  const tbody=rows.map(r=>{
+    if(r[4]===true&&r[1]===null) return`<tr class="cat-row"><td colspan="4">${r[0]}</td></tr>`;
+    return`<tr class="${rCls(r[1],r[2],r[3])}"><td>${r[0]}</td><td>${r[1]??'—'}</td><td>${r[2]??'—'}</td><td>${delta(r[1],r[2],r[3])}</td></tr>`;
+  }).join('');
+
+  document.getElementById('comp-output').innerHTML=`
+    <div class="card" style="margin-top:8px;">
+      <div class="card-title">Comparativo: Março 2026 → Setembro 2026</div>
+      <div class="alert a-green" style="margin-bottom:12px;">🟢 Verde = melhora ≥3pts &nbsp;&nbsp; 🔴 Vermelho = piora ≥3pts</div>
+      <div style="overflow-x:auto;"><table class="ct">
+        <thead><tr><th>Indicador</th><th>Mar/2026 (baseline)</th><th>Set/2026</th><th>Δ</th></tr></thead>
+        <tbody>${tbody}</tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Contexto Comparativo</div>
+      <div class="split">
+        <div class="split-col baseline"><div class="col-label l-base">Março 2026</div>
+          <p style="font-size:13px;line-height:1.6;">Burnout em recuperação ativa. Troca de emprego recente. HRV 32ms (subótimo). ASRS Hiperatividade 97% SEVERA. Sofrimento "motor ligado" 8/10. Ritalina LA 10mg.</p>
+        </div>
+        <div class="split-col atual"><div class="col-label l-atual">Setembro 2026</div>
+          <p style="font-size:13px;line-height:1.6;">${gv('c_ctx')||'Preencha contexto no Campo 1 → Contexto & Garmin.'}</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Achados & Recomendações</div>
+      <p style="font-size:13px;margin-bottom:10px;"><strong>Achados:</strong> ${gv('f_achados')||'Não preenchido.'}</p>
+      <p style="font-size:13px;"><strong>Recomendações:</strong> ${gv('f_rec')||'Não preenchido.'}</p>
+    </div>`;
+}
+
+// ════════════════════════════════════════════
+// LAUDO COM INTERPRETAÇÃO INTELIGENTE
+// ════════════════════════════════════════════
+function gerarLaudo(){
+  const hoje=new Date().toLocaleDateString('pt-BR');
+  const dataAval=fmtDate(gv('c_data'))||hoje;
+  const qi=gn('qi_total'),icv=gn('qi_icv'),imo=gn('qi_imo'),irp=gn('qi_irp'),ivp=gn('qi_ivp'),gap=gn('qi_gap');
+  const hrv=gn('g_hrv'),sleep=gn('g_sleep'),bb=gn('g_bb'),stress=gn('g_stress');
+  const asDes=gasrs('des'),asHiper=gasrs('hiper');
+  const asTotal=(asDes!=null&&asHiper!=null)?asDes+asHiper:null;
+  const briefT=gbrief();
+  const iTrab=gsv('i_trab'),iBem=gsv('i_bem'),iRel=gsv('i_rel'),iSono=gsv('i_sono');
+
+  // INTERPRETAÇÕES AUTOMÁTICAS
+  function interp(html,tipo='normal'){ return`<div class="${tipo==='flag'?'l-flag':tipo==='good'?'l-good':'l-interp'}">${html}</div>`; }
+
+  let cogInterp='';
+  if(qi&&icv&&ivp){
+    const disc=Math.abs(icv-ivp);
+    if(qi>=120) cogInterp+=interp(`✅ QI Total ${qi} confirma faixa Superior/Muito Superior. ${qi>120?'Melhora em relação ao baseline (118-123).':'Estável vs baseline (118-123).'}`,'good');
+    if(disc>=15) cogInterp+=interp(`⚠️ Discrepância ICV–IVP de ${disc} pontos mantida (baseline: ~20pts). Padrão consistente com dupla excepcionalidade (TDAH + AH/SD Verbal). Não representa regressão.`);
+    if(gap&&gap<30) cogInterp+=interp(`✅ Gap funcional estimado em ${gap}pts — redução vs baseline (30-40pts). Indica melhora na regulação sob estresse.`,'good');
+    else if(gap&&gap>40) cogInterp+=interp(`🔴 Gap funcional ${gap}pts — acima do baseline. Avaliar sobrecarga ou piora do TDAH.`,'flag');
+  }
+
+  let tdahInterp='';
+  if(asTotal!=null){
+    const hp=Math.round(asHiper/36*100);
+    if(asHiper<28) tdahInterp+=interp(`✅ Hiperatividade ${hp}% — redução significativa vs baseline (97%). Abaixo do limiar de sofrimento severo.`,'good');
+    else if(asHiper<35) tdahInterp+=interp(`⚠️ Hiperatividade ${hp}% — melhora parcial vs baseline (97%). Ainda moderada-alta. Continuar monitorando.`);
+    else tdahInterp+=interp(`🔴 Hiperatividade ${hp}% — sem melhora vs baseline (97%). Reavaliar protocolo medicamentoso.`,'flag');
+  }
+
+  let fisioInterp='';
+  if(hrv){
+    if(hrv>=45) fisioInterp+=interp(`✅ HRV ${hrv}ms — META ATINGIDA (≥45ms)! Recuperação neuroadrenal consolidada. Marco importante.`,'good');
+    else if(hrv>=38) fisioInterp+=interp(`⚠️ HRV ${hrv}ms — melhora de ${hrv-32}ms vs baseline (32ms). Recuperação em progresso (meta: ≥45ms).`);
+    else fisioInterp+=interp(`🔴 HRV ${hrv}ms — sem melhora vs baseline (32ms). Investigar sobrecarga de estresse ou treino.`,'flag');
+  }
+  if(sleep){
+    if(sleep>=87) fisioInterp+=interp(`✅ Sleep Score ${sleep} — excelente. Meta de 9 meses atingida.`,'good');
+    else if(sleep>=83) fisioInterp+=interp(`✅ Sleep Score ${sleep} — melhora vs baseline (81). Meta intermediária atingida.`,'good');
+    else if(sleep<79) fisioInterp+=interp(`🔴 Sleep Score ${sleep} — piora vs baseline (81). Sono comprometido afeta cognição e ruminação.`,'flag');
+  }
+
+  let bemInterp='';
+  if(iBem!=null){
+    if(iBem<=4) bemInterp+=interp(`✅ Bem-estar ${iBem}/10 — melhora expressiva vs baseline (8/10). "Motor ligado" significativamente reduzido.`,'good');
+    else if(iBem<=6) bemInterp+=interp(`⚠️ Bem-estar ${iBem}/10 — melhora parcial vs baseline (8/10). Motor ligado ainda presente.`);
+    else bemInterp+=interp(`🔴 Bem-estar ${iBem}/10 — sem melhora vs baseline (8/10). Sofrimento por hiperatividade mental persistente.`,'flag');
+  }
+
+  document.getElementById('laudo-output').innerHTML=`
+    <div class="card">
+      <div class="laudo-hdr">
+        <h2>Laudo Neuropsicológico — Reavaliação 6 Meses</h2>
+        <p>Juliana · ${dataAval} · Emitido em ${hoje}</p>
+        <p>Protocolo Longitudinal — Checkpoint 6 meses (baseline: Março 2026)</p>
+      </div>
+      <div class="laudo-body">
+
+        <div class="l-sec"><h3>Identificação</h3>
+          <p><strong>Avalianda:</strong> Juliana &nbsp;|&nbsp; <strong>Data:</strong> ${dataAval} &nbsp;|&nbsp; <strong>Checkpoint:</strong> 6 meses</p>
+          <p><strong>Medicação tomada hoje:</strong> ${gv('c_med_hoje')||'não informado'} &nbsp;|&nbsp; <strong>Energia:</strong> ${gv('c_energia')||'—'}/10 &nbsp;|&nbsp; <strong>Sono anterior:</strong> ${gv('c_sono')||'—'}h</p>
+          <p><strong>Contexto:</strong> ${gv('c_ctx')||'Não registrado.'}</p>
+        </div>
+
+        <div class="l-sec"><h3>Perfil Cognitivo</h3>
+          <p><strong>QI Total:</strong> ${qi||'—'} (${classQI(qi)}, percentil ${pctil(qi)}) · <strong>ICV:</strong> ${icv||'—'} (${classQI(icv)}) · <strong>IMO:</strong> ${imo||'—'} · <strong>IRP:</strong> ${irp||'—'} · <strong>IVP:</strong> ${ivp||'—'}.</p>
+          ${icv&&ivp?`<p>Discrepância ICV–IVP: ${Math.abs(icv-ivp)}pts. Baseline: ~20-23pts.</p>`:''}
+          ${gap?`<p>Gap funcional estimado: ${gap}pts (baseline: 30-40pts).</p>`:''}
+          <p><strong>Subtestes:</strong> Digit Span Forward ${gv('t_dsf')||'—'} (b:7) · Backward ${gv('t_dsb')||'—'} (b:6) · Stroop ${gv('t_stroop')||'—'}/8 (b:8/8) · Fluência ${gv('t_flu')||'—'} itens (b:11) · Atenção ${gv('t_cpt')||'—'}/11 (b:11) · TMT-A ${gv('t_tmta')||'—'}s · TMT-B ${gv('t_tmtb')||'—'}s.</p>
+          ${cogInterp}
+          ${gv('qi_obs')?`<p><em>Observações:</em> ${gv('qi_obs')}</p>`:''}
+        </div>
+
+        <div class="l-sec"><h3>Avaliação de TDAH</h3>
+          ${asTotal!=null?`<p><strong>ASRS-18:</strong> Desatenção ${asDes}/36 (${Math.round(asDes/36*100)}%; b:61%) · Hiperatividade ${asHiper}/36 (${Math.round(asHiper/36*100)}%; b:97%) · Total ${asTotal}/72 (${Math.round(asTotal/72*100)}%; b:79%).</p>`:
+          '<p>ASRS-18 não preenchido nesta avaliação.</p>'}
+          ${briefT!=null?`<p><strong>BRIEF-A:</strong> Total ${briefT}/42 (${Math.round(briefT/42*100)}%; b:76%).</p>`:''}
+          ${tdahInterp}
+        </div>
+
+        <div class="l-sec"><h3>Impacto Funcional</h3>
+          <p>${iTrab!=null?`Trabalho: ${iTrab}/10 (b:6/10)`:''} ${iBem!=null?`· Bem-estar: ${iBem}/10 (b:8/10)`:''} ${iRel!=null?`· Relações: ${iRel}/10 (b:6/10)`:''} ${iSono!=null?`· Sono: ${iSono}/10 (b:5/10)`:''}</p>
+          ${bemInterp}
+        </div>
+
+        <div class="l-sec"><h3>Indicadores Fisiológicos</h3>
+          <p>${hrv?`HRV: ${hrv}ms (b:32ms) ·`:''} ${sleep?`Sleep Score: ${sleep}/100 (b:81) ·`:''} ${bb?`Body Battery: ${bb}/100 (b:+53pts) ·`:''} ${stress?`Estresse médio: ${stress} (b:28-35)`:''}</p>
+          ${fisioInterp}
+        </div>
+
+        <div class="l-sec"><h3>Achados Clínicos</h3><p>${gv('f_achados')||'Não registrado.'}</p></div>
+        <div class="l-sec"><h3>Recomendações</h3><p>${gv('f_rec')||'Não registrado.'}</p></div>
+
+        <div class="l-sec"><h3>Próxima Avaliação</h3>
+          <p>Checkpoint previsto: <strong>9 meses — Dezembro 2026</strong>. Metas: HRV ≥40ms · Sleep Score ≥85 · ASRS Hiperatividade <70% · Bem-estar ≤6/10.</p>
+        </div>
+
+        <div style="margin-top:30px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--slate);">
+          Protocolo Neuropsicológico Longitudinal · Emitido em ${hoje} · Documento complementar à avaliação clínica presencial.
+        </div>
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════
+// EXPORT CSV
+// ════════════════════════════════════════════
+function exportarCSV(){
+  if(sessions.length===0){ alert('Nenhuma sessão salva.'); return; }
+  const headers=['Sessão','Tipo','Data','QI Total','ICV','IMO','IRP','IVP','Gap','ASRS Des','ASRS Hiper','ASRS Total','BRIEF Total','HRV','Sleep Score','Body Battery','Estresse','Impacto Trabalho','Impacto Bem-estar'];
+  const rows=sessions.map(s=>{
+    const d=s.data||{};
+    return[s.label,s.tipo,s.data,d.qi_total,d.qi_icv,d.qi_imo,d.qi_irp,d.qi_ivp,d.qi_gap,d.asrs_des,d.asrs_hiper,
+      d.asrs_des!=null&&d.asrs_hiper!=null?d.asrs_des+d.asrs_hiper:'',d.brief_total,
+      d.g_hrv,d.g_sleep,d.g_bb,d.g_stress,d.i_trab,d.i_bem].map(v=>v??'');
+  });
+  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='protocolo_neuro_juliana.csv'; a.click();
+}
+
+// ════════════════════════════════════════════
+// PRESENTATION MODE
+// ════════════════════════════════════════════
+let presentationOn=false;
+function togglePresentationMode(){
+  presentationOn=!presentationOn;
+  document.body.classList.toggle('presentation-mode',presentationOn);
+  document.querySelector('.btn-sm-ghost').textContent=presentationOn?'✏️ Editar':'👁 Apresentação';
+}
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+window.onload=()=>{
+  loadStore();
+  // Se não há sessões, cria a sessão de baseline automaticamente
+  if(sessions.length===0){
+    const baseline={
+      id:'baseline-mar2026',
+      nome:'Juliana',tipo:'baseline',data:'2026-03-09',
+      label:'Juliana — Baseline (09/03/2026)',
+      createdAt:'2026-03-09T10:00:00Z',updatedAt:'2026-03-09T18:00:00Z',
+      data:{
+        qi_total:'120',qi_icv:'127',qi_imo:'122',qi_irp:'117',qi_ivp:'107',qi_gap:'35',
+        t_dsf:'7',t_dsb:'6',t_stroop:'8',t_flu:'11',t_cpt:'11',t_arit:'5',t_anal:'4',
+        g_hrv:'32',g_fc:'60',g_sleep:'81',g_bb:'53',g_stress:'33',g_pico:'38',g_pico_dia:'Sexta-feira',
+        c_data:'2026-03-09',c_energia:'6',
+        c_ctx:'Burnout em recuperação ativa. Troca recente de emprego com redução significativa de estresse. TDAH diagnosticado, Ritalina LA 10mg em ajuste. HRV 32ms (subótimo). Hiperatividade 97% SEVERA. Sofrimento pelo "motor ligado" 8/10.',
+        f_achados:'TDAH Combinado Severo confirmado (ASRS 57/72). Hiperatividade 97% é o indicador mais crítico. Gap funcional 30-40pts entre desempenho em ambiente ideal e sob estresse. Burnout em recuperação ativa. HRV subótimo (32ms vs meta ≥45ms).',
+        f_rec:'Avaliar adição de Guanfacina 1mg noturna para controle de hiperatividade sem suprimir cognição. Manter monitoramento semanal Garmin. Reavaliação em 6 meses (Setembro 2026) e 9 meses (Dezembro 2026).',
+        asrs_des:22,asrs_hiper:35,brief_total:32,
+        i_trab:6,i_rel:6,i_bem:8,i_sono:5,
+        bf_aber:2,bf_cons:9,bf_ext:6,bf_ama:4,bf_neu:5,
+      }
+    };
+    sessions.push(baseline);
+    saveStore();
+  }
+  renderSessionSelector();
+  // Cria automaticamente sessão de reavaliação Set/2026 se não existir
+  const temSet=sessions.find(s=>s.tipo==='6meses');
+  if(!temSet){
+    const reav={
+      id:'reav-set2026',
+      nome:'Juliana',tipo:'6meses',data:'2026-09-03',
+      label:'Juliana — 6 Meses (03/09/2026)',
+      createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),
+      data:{c_data:'2026-09-03'}
+    };
+    sessions.push(reav);
+    saveStore();
+    renderSessionSelector();
+    document.getElementById('session-selector').value='reav-set2026';
+    currentSessionId='reav-set2026';
+    populateFormData(reav.data);
+  } else {
+    document.getElementById('session-selector').value=temSet.id;
+    currentSessionId=temSet.id;
+    populateFormData(temSet.data||{});
+  }
+  document.getElementById('c_data').valueAsDate=new Date();
+  buildASRS(); buildBRIEF(); buildRuminacao(); buildAllScales();
+  addMedRow(); // primeira linha de medicação
+};
+</script>
+</body>
+</html>

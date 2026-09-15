@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="escuro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#04070f">
+<title>Sistema Neuropsicológico — Juliana</title>
+<script>
+try{
+  var t=JSON.parse(localStorage.getItem("neuro.tema")||"null");
+  if(!t) t=matchMedia("(prefers-color-scheme: light)").matches?"claro":"escuro";
+  document.documentElement.setAttribute("data-theme",t);
+}catch(e){document.documentElement.setAttribute("data-theme","escuro");}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root{
+  --void:#04070f;--void2:#080e1c;--ink:#0b1526;
+  --panel-a:rgba(14,29,54,.94);--panel-b:rgba(7,14,28,.96);
+  --line:rgba(94,199,255,.30);
+  --cyan:#5ec7ff;--cyan-hi:#a8e6ff;--cyan-dim:#2b6c9e;
+  --violet:#a06bff;--gold:#f2c14e;--danger:#ff4d6a;--ok:#46e0a0;
+  --text:#d7e7fb;--text-2:#93aed0;--muted:#62809f;
+  --cut:14px;
+  --f-d:"Chakra Petch",ui-sans-serif,system-ui,sans-serif;
+  --f-b:"Rajdhani",ui-sans-serif,system-ui,sans-serif;
+  --s1:#2f95db;--s2:#b8851a;--s3:#8f5cf0;--s4:#1fae79;
+}
+:root[data-theme="claro"]{
+  --void:#e7eef6;--void2:#eef3f9;--ink:#ffffff;
+  --panel-a:rgba(255,255,255,.97);--panel-b:rgba(240,245,251,.98);
+  --line:rgba(31,111,168,.30);
+  --cyan:#1f6fa8;--cyan-hi:#13486f;--cyan-dim:#8fc3e6;
+  --violet:#6d3bc4;--gold:#8f6512;--danger:#c22b46;--ok:#157f58;
+  --text:#14212f;--text-2:#3d5570;--muted:#61758c;
+  --s1:#1f6fa8;--s2:#8f6512;--s3:#6d3bc4;--s4:#157f58;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{background:var(--void);}
+body{
+  margin:0;background:var(--void);color:var(--text);
+  font-family:var(--f-b);font-size:16px;line-height:1.45;
+  -webkit-text-size-adjust:100%;min-height:100vh;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(1100px 620px at 12% -8%,rgba(38,120,200,.20),transparent 62%),
+    radial-gradient(900px 560px at 92% 4%,rgba(140,80,255,.14),transparent 60%),
+    radial-gradient(800px 800px at 50% 115%,rgba(20,80,150,.16),transparent 62%),
+    linear-gradient(180deg,#04070f,#04070f);
+}
+:root[data-theme="claro"] body::before{
+  background:
+    radial-gradient(1100px 620px at 12% -8%,rgba(31,111,168,.10),transparent 62%),
+    radial-gradient(900px 560px at 92% 4%,rgba(109,59,196,.07),transparent 60%),
+    linear-gradient(180deg,#eef3f9,#e7eef6);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-image:
+    linear-gradient(rgba(94,199,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(94,199,255,.055) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(closest-side at 50% 30%,#000 40%,transparent 100%);
+  mask-image:radial-gradient(closest-side at 50% 30%,#000 40%,transparent 100%);
+}
+:root[data-theme="claro"] body::after{opacity:.5;
+  background-image:linear-gradient(rgba(31,111,168,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(31,111,168,.06) 1px,transparent 1px);
+}
+[hidden]{display:none!important}
+.app{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:14px 12px 108px}
+
+/* ═══════════════════════════════════════════
+   WIN PANELS
+═══════════════════════════════════════════ */
+.win{
+  background:linear-gradient(150deg,rgba(120,212,255,.78),rgba(44,96,160,.30) 46%,rgba(150,110,255,.44));
+  padding:1px;
+  clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+  box-shadow:0 10px 34px rgba(0,0,0,.55),0 0 30px rgba(50,140,230,.10);
+  margin-bottom:14px;
+}
+:root[data-theme="claro"] .win{
+  background:linear-gradient(150deg,rgba(31,111,168,.45),rgba(31,111,168,.14) 46%,rgba(109,59,196,.28));
+  box-shadow:0 8px 24px rgba(20,40,70,.12);
+}
+.win>.wb{
+  background:linear-gradient(168deg,var(--panel-a),var(--panel-b));
+  clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+  padding:14px 15px;
+}
+.wt{
+  display:flex;align-items:center;gap:10px;margin:0 0 12px;
+  font-family:var(--f-d);font-weight:700;font-size:.78rem;letter-spacing:.20em;
+  text-transform:uppercase;color:var(--cyan-hi);
+}
+.wt::before{content:"";width:8px;height:8px;background:var(--cyan);transform:rotate(45deg);box-shadow:0 0 10px var(--cyan);flex:none}
+.wt::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.slotlabel{
+  font-family:var(--f-d);font-size:.68rem;letter-spacing:.2em;color:var(--muted);
+  text-transform:uppercase;margin:14px 0 7px;display:flex;align-items:center;gap:9px;
+}
+.slotlabel::after{content:"";flex:1;height:1px;background:rgba(94,199,255,.14)}
+.empty{padding:28px 10px;text-align:center;color:var(--muted);font-size:.88rem;letter-spacing:.04em}
+
+/* ═══════════════════════════════════════════
+   HUD
+═══════════════════════════════════════════ */
+.hud{margin-bottom:14px}
+.hud>.win>.wb{padding:13px 15px}
+.hud-top{display:flex;align-items:center;gap:13px}
+.rankmark{
+  flex:none;width:54px;height:54px;display:grid;place-items:center;
+  font-family:var(--f-d);font-weight:700;font-size:1.45rem;line-height:1;
+  border:1px solid currentColor;color:var(--cyan);
+  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);
+  background:rgba(94,199,255,.08);text-shadow:0 0 14px currentColor;
+}
+.rankmark small{display:block;font-size:.42rem;letter-spacing:.18em;opacity:.75;margin-top:2px}
+.who{min-width:0;flex:1}
+.who h1{margin:0;font-family:var(--f-d);font-size:1.22rem;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who .sub{font-size:.82rem;color:var(--text-2);letter-spacing:.06em;text-transform:uppercase}
+.lvbox{text-align:right;flex:none}
+.lvbox .n{font-family:var(--f-d);font-size:2rem;font-weight:700;line-height:.95;color:#fff;text-shadow:0 0 18px rgba(94,199,255,.75)}
+:root[data-theme="claro"] .lvbox .n{text-shadow:none}
+.lvbox .l{font-size:.6rem;letter-spacing:.26em;color:var(--muted);text-transform:uppercase}
+.xpline{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:.12em;color:var(--text-2);margin:11px 0 5px;text-transform:uppercase}
+.bar{height:7px;background:rgba(94,199,255,.11);border:1px solid rgba(94,199,255,.18);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#2e8fd6,var(--cyan),var(--cyan-hi));box-shadow:0 0 12px rgba(94,199,255,.85);transition:width .5s cubic-bezier(.2,.8,.3,1)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;padding:3px 10px;
+  border:1px solid rgba(94,199,255,.22);background:rgba(94,199,255,.06);
+  font-size:.76rem;letter-spacing:.07em;color:var(--text-2);
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+}
+.chip b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.chip.gold{border-color:rgba(242,193,78,.35);color:var(--gold);background:rgba(242,193,78,.07)}
+.chip.fire{border-color:rgba(255,120,60,.35);color:#ff9a5c;background:rgba(255,120,60,.07)}
+.chip.vi{border-color:rgba(160,107,255,.4);color:#c7a5ff;background:rgba(160,107,255,.09)}
+.chip.ok{border-color:rgba(70,224,160,.35);color:var(--ok);background:rgba(70,224,160,.07)}
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
+.tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px;
+  background:rgba(94,199,255,.16);border-top:1px solid var(--line);backdrop-filter:blur(10px);
+}
+.tabs button{
+  appearance:none;border:0;cursor:pointer;
+  padding:9px 2px calc(9px + env(safe-area-inset-bottom));
+  background:rgba(6,12,24,.94);color:var(--muted);
+  font-family:var(--f-d);font-size:.62rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+}
+.tabs button i{width:14px;height:14px;border:1.5px solid currentColor;display:block;transform:rotate(45deg);transition:all .2s}
+.tabs button[aria-selected="true"]{color:var(--cyan-hi);background:rgba(16,40,72,.96)}
+.tabs button[aria-selected="true"] i{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+@media(min-width:960px){
+  .tabs{position:static;grid-auto-columns:auto;justify-content:start;gap:6px;background:none;border:0;backdrop-filter:none;margin-bottom:12px}
+  .tabs button{flex-direction:row;padding:8px 16px;font-size:.7rem;background:rgba(10,22,42,.7);border:1px solid rgba(94,199,255,.16);
+    clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+  .tabs button[aria-selected="true"]{border-color:var(--cyan)}
+}
+.pane{display:none}
+.pane.on{display:block}
+.pane>*+*{margin-top:14px}
+
+/* ═══════════════════════════════════════════
+   CARDS DE DIA
+═══════════════════════════════════════════ */
+.q{
+  padding:11px 12px;border:1px solid rgba(94,199,255,.15);
+  background:linear-gradient(160deg,rgba(20,40,72,.5),rgba(9,18,34,.5));
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  cursor:pointer;transition:border-color .15s;
+}
+.q+.q{margin-top:9px}
+.q:hover{border-color:rgba(94,199,255,.4)}
+.q.done{border-color:rgba(70,224,160,.35);background:linear-gradient(160deg,rgba(12,48,40,.45),rgba(7,20,20,.5))}
+.q.late{border-color:rgba(255,77,106,.4)}
+.q.avg{border-color:rgba(242,193,78,.3)}
+.qhead{display:flex;align-items:flex-start;gap:11px}
+.qmain{flex:1;min-width:0}
+.qname{font-family:var(--f-d);font-size:1rem;font-weight:600;letter-spacing:.02em}
+.qmeta{display:flex;flex-wrap:wrap;gap:9px;font-size:.76rem;color:var(--muted);letter-spacing:.04em;margin-top:3px;font-variant-numeric:tabular-nums}
+.qmeta .s{color:var(--cyan)}.qmeta .x{color:var(--cyan-hi)}.qmeta .g{color:var(--gold)}.qmeta .d{color:var(--danger)}.qmeta .ok{color:var(--ok)}
+.qbar{height:6px;background:rgba(94,199,255,.10);margin-top:9px;overflow:hidden}
+.qbar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan-dim),var(--cyan));transition:width .35s}
+.q.done .qbar i{background:linear-gradient(90deg,#1f8a63,var(--ok))}
+.q.late .qbar i{background:linear-gradient(90deg,#8a1f2f,var(--danger))}
+.qscore{font-family:var(--f-d);font-size:1.6rem;font-weight:700;color:var(--cyan);text-align:right;line-height:1;font-variant-numeric:tabular-nums}
+.qscore small{display:block;font-size:.52rem;letter-spacing:.18em;color:var(--muted);margin-top:2px}
+
+/* ═══════════════════════════════════════════
+   BOTÕES
+═══════════════════════════════════════════ */
+.btn{
+  appearance:none;cursor:pointer;font-family:var(--f-d);font-size:.72rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;
+  background:rgba(94,199,255,.08);border:1px solid rgba(94,199,255,.3);color:var(--cyan-hi);
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+  transition:background .15s;
+}
+.btn:hover{background:rgba(94,199,255,.22)}
+.btn.ghost{background:transparent;border-color:rgba(94,199,255,.16);color:var(--muted)}
+.btn.vi{border-color:rgba(160,107,255,.45);color:#c9abff;background:rgba(160,107,255,.1)}
+.btn.gold{border-color:rgba(242,193,78,.45);color:var(--gold);background:rgba(242,193,78,.09)}
+.btn.warn{border-color:rgba(255,77,106,.4);color:#ff8ea0;background:rgba(255,77,106,.08)}
+.btn.ok-btn{border-color:rgba(70,224,160,.4);color:var(--ok);background:rgba(70,224,160,.08)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.wide{width:100%;justify-content:center;text-align:center;padding:10px;display:block}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* ═══════════════════════════════════════════
+   TEMA TOGGLE
+═══════════════════════════════════════════ */
+.tema{
+  appearance:none;cursor:pointer;flex:none;
+  width:56px;height:30px;padding:3px;border-radius:999px;
+  border:1px solid var(--line);background:#0b1526;
+  display:flex;align-items:center;position:relative;
+  transition:background .25s,border-color .25s;
+}
+.tema .knob{
+  width:22px;height:22px;border-radius:50%;background:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.45);
+  transform:translateX(26px);transition:transform .25s cubic-bezier(.2,.8,.3,1);
+}
+.tema .ico{position:absolute;top:50%;transform:translateY(-50%);width:16px;height:16px;display:grid;place-items:center;transition:opacity .2s}
+.tema .lua{left:7px;color:#cfe6ff;opacity:1}
+.tema .sol{right:7px;color:#fff;opacity:0}
+.tema:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+:root[data-theme="claro"] .tema{background:#f28c28;border-color:rgba(0,0,0,.18)}
+:root[data-theme="claro"] .tema .knob{transform:translateX(0)}
+:root[data-theme="claro"] .tema .lua{opacity:0}
+:root[data-theme="claro"] .tema .sol{opacity:1}
+
+/* ═══════════════════════════════════════════
+   TOASTS
+═══════════════════════════════════════════ */
+#toasts{position:fixed;top:10px;right:10px;left:10px;z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none;align-items:flex-end}
+.toast{pointer-events:none;max-width:330px;width:100%;
+  background:linear-gradient(150deg,rgba(120,212,255,.7),rgba(60,120,200,.3));padding:1px;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  animation:slide .3s ease-out}
+.toast>div{background:linear-gradient(168deg,rgba(12,28,52,.97),rgba(6,12,26,.98));padding:9px 12px;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+.toast b{display:block;font-family:var(--f-d);font-size:.62rem;letter-spacing:.2em;color:var(--cyan-hi);text-transform:uppercase;margin-bottom:2px}
+.toast p{margin:0;font-size:.88rem;color:var(--text)}
+.toast.bad{background:linear-gradient(150deg,rgba(255,77,106,.75),rgba(120,20,40,.4))}
+.toast.bad b{color:#ff8ea0}
+.toast.gold{background:linear-gradient(150deg,rgba(242,193,78,.75),rgba(120,80,20,.4))}
+.toast.gold b{color:var(--gold)}
+@keyframes slide{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ═══════════════════════════════════════════
+   PORTAL
+═══════════════════════════════════════════ */
+#portal{background:var(--void);}
+#portal::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:
+    radial-gradient(1100px 620px at 12% -8%,rgba(38,120,200,.20),transparent 62%),
+    radial-gradient(900px 560px at 92% 4%,rgba(140,80,255,.14),transparent 60%),
+    linear-gradient(180deg,#04070f,#04070f);
+  z-index:0;
+}
+:root[data-theme="claro"] #portal{background:var(--void);}
+:root[data-theme="claro"] #portal::before{
+  background:
+    radial-gradient(1100px 620px at 12% -8%,rgba(31,111,168,.10),transparent 62%),
+    linear-gradient(180deg,#eef3f9,#e7eef6);
+}
+#portal>div{position:relative;z-index:1;}
+.perfil-card{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;
+  border:1px solid rgba(94,199,255,.15);background:linear-gradient(160deg,rgba(20,40,72,.5),rgba(9,18,34,.5));
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  margin-bottom:8px;transition:border-color .15s;
+}
+.perfil-card:hover{border-color:rgba(94,199,255,.4);}
+.perfil-inicial{
+  width:46px;height:46px;display:grid;place-items:center;flex:none;
+  font-family:var(--f-d);font-size:1.3rem;font-weight:700;color:var(--cyan);
+  border:1px solid currentColor;background:rgba(94,199,255,.08);
+  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);
+  text-shadow:0 0 14px currentColor;
+}
+.perfil-nome{font-family:var(--f-d);font-size:.95rem;font-weight:600;color:var(--text);}
+.perfil-meta{font-size:.72rem;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums;}
+.perfil-lock{font-size:.8rem;color:var(--muted);margin-left:auto;flex:none;}
+
+/* ═══════════════════════════════════════════
+   LEVEL UP OVERLAY
+═══════════════════════════════════════════ */
+#levelup{
+  position:fixed;inset:0;z-index:100;display:grid;place-items:center;
+  background:rgba(2,5,12,.92);cursor:pointer;
+  animation:fadein .3s ease;
+}
+:root[data-theme="claro"] #levelup{background:rgba(240,245,251,.92)}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.lu-box{text-align:center}
+.lu-box .lu-title{font-family:var(--f-d);font-size:3.5rem;font-weight:700;color:var(--gold);text-shadow:0 0 40px var(--gold);letter-spacing:.1em}
+:root[data-theme="claro"] .lu-box .lu-title{text-shadow:none;color:var(--gold)}
+.lu-box .lu-sub{font-family:var(--f-d);font-size:1rem;letter-spacing:.3em;color:var(--cyan-hi);margin-top:8px}
+.lu-box .lu-val{font-family:var(--f-d);font-size:5rem;font-weight:700;color:#fff;text-shadow:0 0 60px rgba(94,199,255,.9);margin:16px 0}
+:root[data-theme="claro"] .lu-box .lu-val{text-shadow:none;color:var(--cyan)}
+.lu-box .lu-hint{font-size:.8rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-top:20px}
+
+/* ═══════════════════════════════════════════
+   STEP WIZARD (CHECK-IN)
+═══════════════════════════════════════════ */
+.steps{display:flex;gap:4px;margin-bottom:16px;align-items:center}
+.step-dot{width:8px;height:8px;background:rgba(94,199,255,.2);transform:rotate(45deg);transition:.2s;flex:none}
+.step-dot.done{background:var(--ok)}
+.step-dot.active{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.step-line{flex:1;height:1px;background:rgba(94,199,255,.15)}
+.step-label{font-family:var(--f-d);font-size:.68rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+
+/* ═══════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════ */
+label.f{display:block;margin-bottom:10px}
+label.f>span{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+input,select,textarea{
+  width:100%;font-family:var(--f-b);font-size:1rem;color:var(--text);
+  background:rgba(4,10,22,.85);border:1px solid rgba(94,199,255,.25);padding:8px 10px;border-radius:0;
+}
+:root[data-theme="claro"] input,:root[data-theme="claro"] select,:root[data-theme="claro"] textarea{background:rgba(255,255,255,.9);color:var(--text);border-color:rgba(31,111,168,.3)}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* ═══════════════════════════════════════════
+   TIMER
+═══════════════════════════════════════════ */
+.timer-big{font-family:var(--f-d);font-size:3.5rem;font-weight:700;text-align:center;color:var(--cyan);letter-spacing:.05em;font-variant-numeric:tabular-nums;line-height:1;margin:10px 0}
+.timer-big.urgent{color:var(--danger);text-shadow:0 0 20px var(--danger)}
+.timer-big.done{color:var(--ok)}
+
+/* ═══════════════════════════════════════════
+   STIM BOX (sequências de teste)
+═══════════════════════════════════════════ */
+.stim{
+  font-family:var(--f-d);font-size:1.8rem;font-weight:700;color:var(--cyan-hi);
+  background:rgba(94,199,255,.06);border:1px solid rgba(94,199,255,.2);
+  padding:20px;text-align:center;letter-spacing:.15em;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  margin:12px 0;line-height:1.5;
+}
+.stim.hidden{filter:blur(8px);user-select:none}
+
+/* ═══════════════════════════════════════════
+   SCALE BUTTONS (ASRS)
+═══════════════════════════════════════════ */
+.scale-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.scale-opt{
+  flex:1;min-width:0;padding:8px 4px;text-align:center;cursor:pointer;
+  border:1px solid rgba(94,199,255,.2);background:rgba(94,199,255,.04);
+  font-family:var(--f-d);font-size:.68rem;letter-spacing:.06em;color:var(--muted);
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+  transition:all .15s;
+}
+.scale-opt:hover{border-color:rgba(94,199,255,.5);color:var(--cyan)}
+.scale-opt.sel{background:rgba(94,199,255,.18);border-color:var(--cyan);color:var(--cyan-hi)}
+.q-item{padding:12px;border:1px solid rgba(94,199,255,.12);background:rgba(14,29,54,.4);margin-bottom:8px;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.q-item.answered{border-color:rgba(70,224,160,.3)}
+.q-text{font-size:.9rem;margin-bottom:8px;color:var(--text-2);line-height:1.4}
+.q-num{font-size:.65rem;letter-spacing:.15em;color:var(--muted);font-family:var(--f-d);margin-bottom:4px}
+
+/* ═══════════════════════════════════════════
+   GRÁFICOS SVG
+═══════════════════════════════════════════ */
+.chart-wrap{width:100%;overflow:hidden;margin:8px 0}
+.chart-wrap svg{width:100%;display:block}
+.chart-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chart-filters .btn{font-size:.65rem;padding:4px 10px}
+.chart-filters .btn.active-f{border-color:var(--cyan);color:var(--cyan-hi);background:rgba(94,199,255,.12)}
+.mini-charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:10px 0}
+.mini-chart-box{background:rgba(14,29,54,.5);border:1px solid rgba(94,199,255,.12);padding:10px;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.mini-chart-label{font-family:var(--f-d);font-size:.62rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+
+/* ═══════════════════════════════════════════
+   RANKING
+═══════════════════════════════════════════ */
+.rank-row{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;
+  border:1px solid rgba(94,199,255,.12);background:rgba(14,29,54,.4);
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  margin-bottom:6px;
+}
+.rank-pos{font-family:var(--f-d);font-size:1.2rem;font-weight:700;color:var(--muted);width:32px;text-align:center;flex:none;font-variant-numeric:tabular-nums}
+.rank-pos.p1{color:var(--gold);text-shadow:0 0 14px var(--gold)}
+.rank-pos.p2{color:var(--cyan-hi)}
+.rank-pos.p3{color:#b8851a}
+.rank-info{flex:1;min-width:0}
+.rank-date{font-family:var(--f-d);font-size:.8rem;font-weight:600;color:var(--text);letter-spacing:.03em}
+.rank-meta{font-size:.72rem;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+.rank-score{font-family:var(--f-d);font-size:1.5rem;font-weight:700;color:var(--cyan);font-variant-numeric:tabular-nums}
+
+/* ═══════════════════════════════════════════
+   PROGRESS CIRCLES (dimensões)
+═══════════════════════════════════════════ */
+.dim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.dim-box{text-align:center;padding:12px 8px;border:1px solid rgba(94,199,255,.12);background:rgba(14,29,54,.4);
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.dim-val{font-family:var(--f-d);font-size:1.6rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.dim-lbl{font-size:.65rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.dim-bar{height:4px;background:rgba(94,199,255,.1);margin-top:8px;overflow:hidden}
+.dim-bar i{display:block;height:100%;transition:width .4s}
+
+/* ═══════════════════════════════════════════
+   DETALHE DO DIA (modal-like)
+═══════════════════════════════════════════ */
+#detalhe{position:fixed;inset:0;z-index:80;background:rgba(2,5,12,.92);overflow-y:auto;padding:20px 12px 40px}
+:root[data-theme="claro"] #detalhe{background:rgba(240,245,251,.95)}
+.detalhe-inner{max-width:600px;margin:0 auto}
+
+/* ═══════════════════════════════════════════
+   SEMANA VISUAL
+═══════════════════════════════════════════ */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:10px 0}
+.week-day{padding:8px 4px;text-align:center;border:1px solid rgba(94,199,255,.1);background:rgba(14,29,54,.3);
+  clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px)}
+.week-day .wd-name{font-family:var(--f-d);font-size:.55rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.week-day .wd-inst{font-size:.65rem;color:var(--text-2);margin-top:4px;line-height:1.3}
+.week-day .wd-score{font-family:var(--f-d);font-size:.9rem;font-weight:700;color:var(--cyan);margin-top:4px;font-variant-numeric:tabular-nums}
+.week-day.today{border-color:rgba(94,199,255,.4)}
+.week-day.done-day{border-color:rgba(70,224,160,.3);background:rgba(12,48,40,.3)}
+.week-day.done-day .wd-score{color:var(--ok)}
+.week-day.pending{opacity:.5}
+
+/* ═══════════════════════════════════════════
+   RESULT SCREEN
+═══════════════════════════════════════════ */
+.result-score{font-family:var(--f-d);font-size:4rem;font-weight:700;text-align:center;color:var(--cyan);
+  text-shadow:0 0 30px rgba(94,199,255,.6);line-height:1;font-variant-numeric:tabular-nums;margin:16px 0}
+:root[data-theme="claro"] .result-score{text-shadow:none}
+.result-label{text-align:center;font-family:var(--f-d);font-size:.8rem;letter-spacing:.28em;color:var(--muted);text-transform:uppercase}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(min-width:960px){
+  .dim-grid{grid-template-columns:repeat(3,1fr)}
+  .app{padding:20px 18px 40px}
+}
+@media(max-width:400px){
+  .dim-grid{grid-template-columns:repeat(3,1fr)}
+  .week-grid{grid-template-columns:repeat(7,1fr)}
+  .week-day .wd-inst{font-size:.55rem}
+  .stim{font-size:1.3rem;letter-spacing:.08em}
+}
+</style>
+</head>
+<body>
+<div id="toasts"></div>
+
+<!-- ══════════════════════════════════════
+     PORTAL DE PERFIS
+══════════════════════════════════════ -->
+<div id="portal" style="display:none;position:fixed;inset:0;z-index:200;overflow-y:auto;padding:24px 12px 60px">
+  <div style="max-width:520px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:28px;padding-top:20px">
+      <div style="font-family:var(--f-d);font-size:1.5rem;font-weight:700;color:var(--cyan-hi);letter-spacing:.1em">SISTEMA NEURO</div>
+      <div style="font-size:.8rem;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:4px">Selecione seu perfil</div>
+    </div>
+    <div id="portal-lista"></div>
+    <div class="win" style="margin-top:10px;cursor:pointer" onclick="abrirNovoPerfilForm()">
+      <div class="wb" style="display:flex;align-items:center;gap:14px;padding:14px 16px">
+        <div style="width:46px;height:46px;display:grid;place-items:center;border:1px dashed rgba(94,199,255,.3);font-size:1.4rem;color:var(--muted);clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)">+</div>
+        <div>
+          <div style="font-family:var(--f-d);font-size:.9rem;font-weight:600;color:var(--text)">Nova pessoa</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px">Criar perfil neste aparelho</div>
+        </div>
+      </div>
+    </div>
+    <!-- Form novo perfil -->
+    <div id="portal-form-novo" hidden class="win" style="margin-top:10px">
+      <div class="wb">
+        <h2 class="wt">NOVO PERFIL</h2>
+        <label class="f"><span>Nome (até 24 caracteres)</span>
+          <input type="text" id="pf-nome" maxlength="24" placeholder="Seu nome" autocomplete="off">
+        </label>
+        <label class="f" style="margin-top:10px"><span>PIN de 4 dígitos (opcional)</span>
+          <input type="password" id="pf-pin" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="Deixe vazio para entrar direto">
+        </label>
+        <div style="font-size:.72rem;color:var(--muted);margin:6px 0 12px;line-height:1.5">
+          O PIN só serve para ninguém abrir o seu por engano — não é senha de banco.
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="criarPerfil()">CRIAR</button>
+          <button class="btn ghost" onclick="document.getElementById('portal-form-novo').hidden=true">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+    <!-- Form PIN -->
+    <div id="portal-form-pin" hidden class="win" style="margin-top:10px">
+      <div class="wb">
+        <h2 class="wt" id="pin-titulo">ENTRAR</h2>
+        <div style="font-size:.85rem;color:var(--text-2);margin-bottom:12px">Digite o PIN para continuar.</div>
+        <label class="f"><span>PIN</span>
+          <input type="password" id="pin-input" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="····" autocomplete="off" onkeydown="if(event.key==='Enter')confirmarPIN()">
+        </label>
+        <div id="pin-erro" style="color:var(--danger);font-size:.78rem;margin-top:6px;display:none">PIN incorreto. Tente novamente.</div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn" onclick="confirmarPIN()">ENTRAR</button>
+          <button class="btn ghost" onclick="fecharPINForm()">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+    <!-- Importar backup -->
+    <div style="margin-top:20px;text-align:center">
+      <button class="btn ghost" style="font-size:.65rem" onclick="importarBackup()">⬆ IMPORTAR BACKUP .JSON</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="processarImport(event)">
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL UP OVERLAY -->
+<div id="levelup" hidden onclick="document.getElementById('levelup').hidden=true">
+  <div class="lu-box">
+    <div class="lu-title">NOVO RECORDE</div>
+    <div class="lu-sub">SCORE COGNITIVO</div>
+    <div class="lu-val" id="lu-val">—</div>
+    <div class="lu-hint">Toque para fechar</div>
+  </div>
+</div>
+
+<!-- DETALHE DO DIA -->
+<div id="detalhe" hidden>
+  <div class="detalhe-inner">
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt" id="det-title">DETALHE</h2>
+        <div id="det-body"></div>
+        <div class="btn-row" style="margin-top:16px">
+          <button class="btn ghost" onclick="fecharDetalhe()">← VOLTAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <!-- HUD -->
+  <div class="hud win">
+    <div class="wb">
+      <div class="hud-top">
+        <div class="rankmark" id="hud-rank">—<small>RANK</small></div>
+        <div class="who">
+          <h1>Juliana</h1>
+          <div class="sub">Sistema Neuropsicológico</div>
+        </div>
+        <div class="lvbox">
+          <div class="n" id="hud-score">—</div>
+          <div class="l">SCORE SEMANAL</div>
+        </div>
+        <button class="tema" id="btnTema" role="switch" aria-checked="true" aria-label="Alternar tema" title="Alternar tema" onclick="alternarTema()" style="margin-left:10px">
+          <span class="ico lua" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10A6 6 0 0 1 6 3a6 6 0 1 0 7 7z"/></svg></span>
+          <span class="ico sol" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="3"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="1" y1="8" x2="3" y2="8"/><line x1="13" y1="8" x2="15" y2="8"/><line x1="3.5" y1="3.5" x2="5" y2="5"/><line x1="11" y1="11" x2="12.5" y2="12.5"/><line x1="12.5" y1="3.5" x2="11" y2="5"/><line x1="5" y1="11" x2="3.5" y2="12.5"/></svg></span>
+          <span class="knob"></span>
+        </button>
+      </div>
+      <div class="xpline"><span>PROGRESSO SEMANAL</span><span id="hud-prog-txt">0/6 instrumentos</span></div>
+      <div class="bar"><i id="hud-bar" style="width:0%"></i></div>
+      <div class="chips" id="hud-chips"></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" aria-controls="pane-hoje" onclick="switchTab('hoje',this)">
+      <i></i>HOJE
+    </button>
+    <button role="tab" aria-selected="false" aria-controls="pane-historico" onclick="switchTab('historico',this)">
+      <i></i>HISTÓRICO
+    </button>
+    <button role="tab" aria-selected="false" aria-controls="pane-evolucao" onclick="switchTab('evolucao',this)">
+      <i></i>EVOLUÇÃO
+    </button>
+    <button role="tab" aria-selected="false" aria-controls="pane-ranking" onclick="switchTab('ranking',this)">
+      <i></i>RANKING
+    </button>
+    <button role="tab" aria-selected="false" aria-controls="pane-mais" onclick="switchTab('mais',this)">
+      <i></i>MAIS
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANE: HOJE
+  ══════════════════════════════════════ -->
+  <div class="pane on" id="pane-hoje">
+
+    <!-- Semana visual -->
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">SEMANA ATUAL</h2>
+        <div class="week-grid" id="week-grid"></div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:8px;letter-spacing:.06em">
+          Cada dia um instrumento. Domingo = síntese semanal automática.
+        </div>
+      </div>
+    </div>
+
+    <!-- Check-in do dia -->
+    <div class="win" id="checkin-panel">
+      <div class="wb">
+        <h2 class="wt" id="checkin-title">CHECK-IN DE HOJE</h2>
+        <div id="checkin-body"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANE: HISTÓRICO
+  ══════════════════════════════════════ -->
+  <div class="pane" id="pane-historico">
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">HISTÓRICO <span class="cnt" id="hist-cnt"></span></h2>
+        <div class="btn-row" style="margin-bottom:12px">
+          <button class="btn ghost" onclick="exportarJSON()">⬇ JSON</button>
+          <button class="btn ghost" onclick="exportarCSV()">⬇ CSV</button>
+        </div>
+        <div id="hist-lista"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANE: EVOLUÇÃO
+  ══════════════════════════════════════ -->
+  <div class="pane" id="pane-evolucao">
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">EVOLUÇÃO LONGITUDINAL</h2>
+
+        <!-- Chips de números -->
+        <div class="chips" id="evo-chips" style="margin-bottom:16px"></div>
+
+        <!-- Filtros -->
+        <div class="chart-filters" id="chart-filters">
+          <button class="btn active-f" data-per="7" onclick="setFiltro(7,this)">7 DIAS</button>
+          <button class="btn" data-per="30" onclick="setFiltro(30,this)">30 DIAS</button>
+          <button class="btn" data-per="90" onclick="setFiltro(90,this)">90 DIAS</button>
+          <button class="btn" data-per="0" onclick="setFiltro(0,this)">TUDO</button>
+        </div>
+
+        <!-- Gráfico 1: Score geral -->
+        <div class="slotlabel">SCORE GERAL POR SEMANA</div>
+        <div class="chart-wrap" id="chart-score"></div>
+
+        <!-- Gráfico 2: Dimensões mini -->
+        <div class="slotlabel">DIMENSÕES</div>
+        <div class="mini-charts" id="mini-charts"></div>
+
+        <!-- Gráfico 3: Garmin -->
+        <div class="slotlabel">GARMIN — HRV & SONO</div>
+        <div class="chart-wrap" id="chart-garmin"></div>
+
+        <button class="btn ghost wide" style="margin-top:12px" onclick="toggleTabela()">VER TABELA</button>
+        <div id="tabela-wrap" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANE: RANKING
+  ══════════════════════════════════════ -->
+  <div class="pane" id="pane-ranking">
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">RANKING — TOP SEMANAS</h2>
+        <div id="rank-lista"></div>
+      </div>
+    </div>
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">RECORDES PESSOAIS</h2>
+        <div id="recordes-lista"></div>
+      </div>
+    </div>
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">BASELINE — MARÇO 2026</h2>
+        <div class="dim-grid">
+          <div class="dim-box">
+            <div class="dim-val" style="color:var(--cyan)">120</div>
+            <div class="dim-lbl">QI TOTAL</div>
+            <div class="dim-bar"><i style="width:71%;background:var(--s1)"></i></div>
+          </div>
+          <div class="dim-box">
+            <div class="dim-val" style="color:var(--danger)">97%</div>
+            <div class="dim-lbl">HIPERATIV.</div>
+            <div class="dim-bar"><i style="width:97%;background:var(--danger)"></i></div>
+          </div>
+          <div class="dim-box">
+            <div class="dim-val" style="color:var(--gold)">32ms</div>
+            <div class="dim-lbl">HRV</div>
+            <div class="dim-bar"><i style="width:32%;background:var(--s2)"></i></div>
+          </div>
+        </div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:10px;letter-spacing:.04em;line-height:1.5">
+          Referência fixa. Todas as evoluções são comparadas a este ponto de partida.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANE: MAIS
+  ══════════════════════════════════════ -->
+  <div class="pane" id="pane-mais">
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">PERFIL ATIVO</h2>
+        <div id="mais-perfil-info" style="margin-bottom:14px"></div>
+        <div class="btn-row">
+          <button class="btn" onclick="abrirPortal()">⇄ TROCAR PESSOA</button>
+          <button class="btn ghost" onclick="exportarBackupPerfil()">⬇ BACKUP JSON</button>
+        </div>
+      </div>
+    </div>
+    <div class="win">
+      <div class="wb">
+        <h2 class="wt">GERENCIAR PERFIL</h2>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
+          Exportar salva seu histórico completo em um arquivo .json.<br>
+          Importar restaura um backup anterior (não apaga o histórico atual — funde os dados).
+        </div>
+        <div class="btn-row">
+          <button class="btn ghost" onclick="exportarJSON()">⬇ CSV</button>
+          <button class="btn ghost" onclick="exportarCSV()">⬇ CSV DADOS</button>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(94,199,255,.1)">
+          <div style="font-size:.75rem;color:var(--danger);font-weight:600;margin-bottom:8px;letter-spacing:.06em">ZONA DE PERIGO</div>
+          <button class="btn warn" onclick="confirmarExcluirPerfil()">🗑 EXCLUIR ESTE PERFIL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONSTANTES & DADOS
+// ═══════════════════════════════════════════════════════════
+// Chaves de storage — Parte 5 Nível 1
+const TEMA_KEY   = "neuro.tema";
+const K_USERS    = "neuro.users";
+const K_SESS     = "neuro.sessao";
+const K_SAVE     = id => "neuro.save." + id;
+
+// Compat: chave legada (migração automática)
+const STORE_KEY_LEGADO = "neuro.sistema.v1";
+
+// Escape de HTML — nunca colocar nome de usuário em innerHTML sem isso
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let perfilAtivo = null; // objeto do usuário logado
+let STORE_KEY   = "";   // definido ao logar — K_SAVE(id)
+
+// Rotação semanal de instrumentos
+const INSTRUMENTOS = [
+  { id:"contexto",  nome:"Contexto & Garmin", ico:"◇", desc:"Energia · Sono · HRV · Estresse", cor:"var(--cyan)"   },
+  { id:"digit",     nome:"Digit Span",         ico:"▷", desc:"Memória de Trabalho",              cor:"var(--s1)"    },
+  { id:"stroop",    nome:"Stroop + Aritmética", ico:"◈", desc:"Controle Inibitório · Velocidade", cor:"var(--s2)"    },
+  { id:"fluencia",  nome:"Fluência + Analogias",ico:"◉", desc:"Verbal · Semântica",               cor:"var(--s3)"    },
+  { id:"brief",     nome:"BRIEF-A",             ico:"▣", desc:"Funções Executivas (6 domínios)",  cor:"var(--s4)"    },
+  { id:"asrs",      nome:"ASRS-18",             ico:"◆", desc:"TDAH — Desatenção · Hiperativ.",   cor:"var(--gold)"  },
+  { id:"sintese",   nome:"Síntese Semanal",     ico:"★", desc:"Score composto automático",         cor:"var(--violet)"},
+];
+
+// Dia da semana 0=Dom,1=Seg,...,6=Sab → instrumento
+// Dom=0→sintese, Seg=1→contexto, Ter=2→digit, Qua=3→stroop, Qui=4→fluencia, Sex=5→brief, Sab=6→asrs
+const DIA_INSTRUMENTO = [6,0,1,2,3,4,5]; // índice em INSTRUMENTOS por getDay()
+
+const ASRS_DES = [
+  "Tenho dificuldade em manter atenção em tarefas chatas ou repetitivas",
+  "Cometo erros por descuido em projetos ou tarefas",
+  "Sou facilmente distraída por barulhos ou atividades ao redor",
+  "Tenho dificuldade em lembrar de compromissos ou obrigações",
+  "Evito ou acho difícil começar tarefas que exigem muito esforço mental",
+  "Perco ou esqueço onde coloco coisas necessárias",
+  "Não consigo terminar tarefas quando as começo",
+  "Não presto atenção quando alguém fala diretamente comigo",
+  "Tenho dificuldade em organizar tarefas com múltiplos passos",
+];
+const ASRS_HIPER = [
+  "Fico mexendo as mãos ou os pés, ou me remexo na cadeira",
+  "Sinto que estou sempre em movimento, como se tivesse um motor ligado",
+  "Tenho dificuldade em me envolver em atividades de lazer de forma tranquila",
+  "Falo demais em situações sociais",
+  "Termino as frases dos outros antes que eles as completem",
+  "Tenho dificuldade em aguardar minha vez em filas ou conversas",
+  "Interrompo os outros quando estão falando",
+  "Levanto do lugar em situações em que deveria ficar sentada",
+  "Sinto sensação de inquietação ou agitação interna",
+];
+const BRIEF_Q = [
+  {cat:"Inibição",      q:"Digo ou faço coisas sem pensar antes"},
+  {cat:"Inibição",      q:"Reajo de forma exagerada a situações menores"},
+  {cat:"Flexibilidade", q:"Tenho dificuldade quando meus planos mudam de última hora"},
+  {cat:"Flexibilidade", q:"Fico presa em uma forma de resolver mesmo quando não funciona"},
+  {cat:"Flexibilidade", q:"Me incomoda muito quando as coisas não saem como planejei"},
+  {cat:"Ctrl.Emocional",q:"Minhas frustrações são desproporcionais ao problema"},
+  {cat:"Ctrl.Emocional",q:"Tenho dificuldade em deixar pra lá quando algo me incomoda"},
+  {cat:"Iniciação",     q:"Procrastino — começo tarefas importantes no último momento"},
+  {cat:"Iniciação",     q:"Tenho dificuldade de iniciar tarefas mesmo quando quero"},
+  {cat:"Mem.Trabalho",  q:"Esqueço o que ia fazer quando sou interrompida"},
+  {cat:"Mem.Trabalho",  q:"Perco o fio da meada no meio de tarefas complexas"},
+  {cat:"Org/Plan",      q:"Subestimo o tempo ou a complexidade de projetos"},
+  {cat:"Org/Plan",      q:"Deixo tarefas importantes para a última hora sem querer"},
+  {cat:"Org/Plan",      q:"Meu ambiente de trabalho fica desorganizado sem perceber"},
+];
+
+const DIGIT_FWD = [
+  [4,7,2],[8,3,9,1],[5,2,8,4,6],[3,9,1,7,4,2],[6,1,8,3,9,5,2],[4,7,2,9,1,6,8,3]
+];
+const DIGIT_BWD = [
+  [6,2],[3,8,1],[9,2,5,7],[4,1,8,3,6],[7,3,9,2,5,1],[2,8,4,6,1,9,3]
+];
+
+// ═══════════════════════════════════════════════════════════
+// STORAGE GENÉRICO
+// ═══════════════════════════════════════════════════════════
+function lsGet(key,def){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def; }catch(e){ return def; } }
+function lsRaw(key,val){ try{ localStorage.setItem(key,JSON.stringify(val)); return true; }catch(e){ return false; } }
+function lsDel(key){ try{ localStorage.removeItem(key); }catch(e){} }
+
+// Funções que o resto do código usa (operam sempre na chave do perfil ativo)
+function ls(def){ return lsGet(STORE_KEY,def); }
+function lsSet(val){ const ok=lsRaw(STORE_KEY,val); if(!ok) toast("ERRO","Não foi possível salvar os dados.","bad"); return ok; }
+
+const ESTADO_INIT = { v:1, semanas:[], streak:0, melhorStreak:0, ultimaSemana:null, recordes:{} };
+let estado = ESTADO_INIT;
+
+// ═══════════════════════════════════════════════════════════
+// GESTÃO DE PERFIS
+// ═══════════════════════════════════════════════════════════
+function getUsers(){ return lsGet(K_USERS,[]); }
+function saveUsers(u){ lsRaw(K_USERS,u); }
+
+function carregarEstadoPerfil(){
+  estado = ls(ESTADO_INIT);
+  if(!estado||!estado.semanas) estado = {...ESTADO_INIT};
+}
+
+function migrarLegado(userId){
+  // Se existir dado no formato antigo sem perfis, migra para o novo usuário
+  const legado = lsGet(STORE_KEY_LEGADO, null);
+  if(legado && legado.semanas && legado.semanas.length){
+    const atual = lsGet(K_SAVE(userId), null);
+    if(!atual || !atual.semanas || !atual.semanas.length){
+      lsRaw(K_SAVE(userId), legado);
+      toast("MIGRAÇÃO","Dados anteriores importados para seu perfil.","");
+    }
+  }
+}
+
+function logarPerfil(user){
+  perfilAtivo = user;
+  STORE_KEY = K_SAVE(user.id);
+  lsRaw(K_SESS, user.id);
+  // Atualiza visto
+  const users = getUsers();
+  const idx = users.findIndex(u=>u.id===user.id);
+  if(idx>=0){ users[idx].visto = Date.now(); saveUsers(users); perfilAtivo = users[idx]; }
+  migrarLegado(user.id);
+  carregarEstadoPerfil();
+  fecharPortal();
+  renderHUD();
+  renderSemanaVisual();
+  renderCheckin();
+  renderMaisPerfil();
+}
+
+function abrirPortal(){
+  document.getElementById("portal").style.display = "block";
+  document.getElementById("portal-form-novo").hidden = true;
+  document.getElementById("portal-form-pin").hidden = true;
+  renderPortal();
+}
+function fecharPortal(){
+  document.getElementById("portal").style.display = "none";
+}
+
+function renderPortal(){
+  const users = getUsers().sort((a,b)=>(b.visto||0)-(a.visto||0));
+  const lista = document.getElementById("portal-lista");
+  if(!users.length){
+    lista.innerHTML = `<div class="empty" style="padding:20px 0">Nenhum perfil ainda. Crie o primeiro abaixo.</div>`;
+    return;
+  }
+  lista.innerHTML = users.map(u=>{
+    const dias = (() => {
+      const save = lsGet(K_SAVE(u.id), null);
+      if(!save||!save.semanas) return 0;
+      return save.semanas.reduce((a,s)=>a+Object.keys(s.dias||{}).length,0);
+    })();
+    const visto = u.visto ? new Date(u.visto).toLocaleDateString("pt-BR",{day:"numeric",month:"short"}) : "—";
+    return `<div class="perfil-card" onclick="selecionarPerfil('${u.id}')">
+      <div class="perfil-inicial">${esc(u.nome.charAt(0).toUpperCase())}</div>
+      <div style="flex:1;min-width:0">
+        <div class="perfil-nome">${esc(u.nome)}</div>
+        <div class="perfil-meta">${dias} registros · último acesso ${visto}</div>
+      </div>
+      ${u.pin?'<div class="perfil-lock">🔒</div>':''}
+    </div>`;
+  }).join("");
+}
+
+let _pinTarget = null;
+function selecionarPerfil(id){
+  const users = getUsers();
+  const user = users.find(u=>u.id===id);
+  if(!user) return;
+  if(user.pin){
+    _pinTarget = user;
+    document.getElementById("pin-titulo").textContent = "ENTRAR — "+esc(user.nome).toUpperCase();
+    document.getElementById("pin-input").value = "";
+    document.getElementById("pin-erro").style.display = "none";
+    document.getElementById("portal-form-pin").hidden = false;
+    document.getElementById("portal-form-novo").hidden = true;
+    setTimeout(()=>document.getElementById("pin-input").focus(),50);
+  } else {
+    logarPerfil(user);
+  }
+}
+
+function confirmarPIN(){
+  const digitado = document.getElementById("pin-input").value.trim();
+  if(!_pinTarget) return;
+  if(digitado === String(_pinTarget.pin)){
+    document.getElementById("portal-form-pin").hidden = true;
+    logarPerfil(_pinTarget);
+    _pinTarget = null;
+  } else {
+    document.getElementById("pin-erro").style.display = "block";
+    document.getElementById("pin-input").value = "";
+    document.getElementById("pin-input").focus();
+  }
+}
+function fecharPINForm(){
+  document.getElementById("portal-form-pin").hidden = true;
+  _pinTarget = null;
+}
+
+function abrirNovoPerfilForm(){
+  document.getElementById("portal-form-novo").hidden = false;
+  document.getElementById("portal-form-pin").hidden = true;
+  document.getElementById("pf-nome").value = "";
+  document.getElementById("pf-pin").value = "";
+  setTimeout(()=>document.getElementById("pf-nome").focus(),50);
+}
+
+function criarPerfil(){
+  const nome = document.getElementById("pf-nome").value.trim().slice(0,24);
+  const pinRaw = document.getElementById("pf-pin").value.trim();
+  if(!nome){ toast("ATENÇÃO","Digite um nome para o perfil.","bad"); return; }
+  if(pinRaw && !/^\d{4}$/.test(pinRaw)){ toast("ATENÇÃO","O PIN deve ter exatamente 4 dígitos.","bad"); return; }
+  const users = getUsers();
+  const novo = { id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), nome, pin:pinRaw||null, visto:Date.now() };
+  users.push(novo);
+  saveUsers(users);
+  document.getElementById("portal-form-novo").hidden = true;
+  logarPerfil(novo);
+}
+
+function confirmarExcluirPerfil(){
+  if(!perfilAtivo) return;
+  const conf = prompt(`Para excluir, digite o nome do perfil: "${perfilAtivo.nome}"`);
+  if(conf === perfilAtivo.nome){
+    const users = getUsers().filter(u=>u.id!==perfilAtivo.id);
+    saveUsers(users);
+    lsDel(K_SAVE(perfilAtivo.id));
+    perfilAtivo = null; STORE_KEY = "";
+    estado = {...ESTADO_INIT};
+    toast("EXCLUÍDO","Perfil removido com sucesso.","");
+    abrirPortal();
+  } else if(conf !== null){
+    toast("CANCELADO","Nome incorreto — nenhum dado foi apagado.","bad");
+  }
+}
+
+function exportarBackupPerfil(){
+  if(!perfilAtivo) return;
+  const dados = { perfil: perfilAtivo, estado };
+  const blob = new Blob([JSON.stringify(dados,null,2)],{type:"application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "neuro_backup_"+esc(perfilAtivo.nome).replace(/\s+/g,"_")+".json"; a.click();
+}
+
+function importarBackup(){
+  document.getElementById("import-file").click();
+}
+function processarImport(evt){
+  const file = evt.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const dados = JSON.parse(e.target.result);
+      // Suporta backup completo {perfil,estado} ou estado puro
+      const estadoImport = dados.estado||dados;
+      if(!estadoImport.semanas) throw new Error("Formato inválido");
+      // Cria ou usa perfil do backup
+      const nomeImport = dados.perfil?.nome||"Importado";
+      const users = getUsers();
+      let user = users.find(u=>u.nome===nomeImport);
+      if(!user){
+        user = { id:Date.now().toString(36), nome:nomeImport, pin:null, visto:Date.now() };
+        users.push(user); saveUsers(users);
+      }
+      lsRaw(K_SAVE(user.id), estadoImport);
+      toast("IMPORTADO","Backup restaurado para: "+esc(nomeImport),"");
+      renderPortal();
+    }catch(err){ toast("ERRO","Arquivo inválido ou corrompido.","bad"); }
+    evt.target.value = "";
+  };
+  reader.readAsText(file);
+}
+
+function renderMaisPerfil(){
+  const el = document.getElementById("mais-perfil-info"); if(!el) return;
+  if(!perfilAtivo){ el.innerHTML='<div class="empty">Nenhum perfil ativo.</div>'; return; }
+  const dias = estado.semanas.reduce((a,s)=>a+Object.keys(s.dias||{}).length,0);
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="perfil-inicial" style="width:54px;height:54px;font-size:1.5rem">${esc(perfilAtivo.nome.charAt(0).toUpperCase())}</div>
+      <div>
+        <div style="font-family:var(--f-d);font-size:1.1rem;font-weight:700;color:var(--text)">${esc(perfilAtivo.nome)}</div>
+        <div class="chips" style="margin-top:6px">
+          <span class="chip"><b>${dias}</b> registros</span>
+          <span class="chip"><b>${estado.streak||0}</b> streak</span>
+          ${perfilAtivo.pin?'<span class="chip vi">🔒 PIN ativo</span>':'<span class="chip ghost">sem PIN</span>'}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATA LOCAL
+// ═══════════════════════════════════════════════════════════
+const z = n => String(n).padStart(2,"0");
+const ymd = d => d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate());
+const hoje = () => ymd(new Date());
+const semanaId = d => { // YYYY-Www
+  const dt = d||new Date();
+  const jan1 = new Date(dt.getFullYear(),0,1);
+  const w = Math.ceil(((dt-jan1)/86400000+jan1.getDay()+1)/7);
+  return dt.getFullYear()+"-W"+z(w);
+};
+const diaNome = d => ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"][d.getDay()];
+const mesNome = m => ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][m];
+const fmtData = d => {
+  const dt = new Date(d+"T12:00:00");
+  return dt.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+};
+
+// ═══════════════════════════════════════════════════════════
+// TEMA
+// ═══════════════════════════════════════════════════════════
+function alternarTema(){
+  const atual = document.documentElement.getAttribute("data-theme");
+  const novo = atual==="escuro"?"claro":"escuro";
+  document.documentElement.setAttribute("data-theme",novo);
+  try{ localStorage.setItem(TEMA_KEY,JSON.stringify(novo)); }catch(e){}
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content",novo==="escuro"?"#04070f":"#eef3f9");
+  renderGraficos();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════
+function switchTab(id, btn){
+  document.querySelectorAll(".pane").forEach(p=>p.classList.remove("on"));
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected","false"));
+  document.getElementById("pane-"+id).classList.add("on");
+  btn.setAttribute("aria-selected","true");
+  if(id==="historico") renderHistorico();
+  if(id==="evolucao"){ renderChips(); renderGraficos(); }
+  if(id==="ranking") renderRanking();
+  if(id==="mais") renderMaisPerfil();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function toast(titulo, msg, tipo=""){
+  const el = document.createElement("div");
+  el.className = "toast"+(tipo?" "+tipo:"");
+  el.innerHTML = `<div><b>${titulo}</b><p>${msg}</p></div>`;
+  document.getElementById("toasts").appendChild(el);
+  setTimeout(()=>el.remove(), 3800);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SEMANA ATUAL — instru por dia
+// ═══════════════════════════════════════════════════════════
+function getSemanaAtual(){
+  const sid = semanaId();
+  return estado.semanas.find(s=>s.id===sid)||null;
+}
+function getOuCriarSemana(){
+  const sid = semanaId();
+  let s = estado.semanas.find(s=>s.id===sid);
+  if(!s){
+    s = { id:sid, dias:{}, scoreGeral:null, createdAt:Date.now() };
+    estado.semanas.unshift(s);
+    if(estado.semanas.length>52) estado.semanas.length=52;
+  }
+  return s;
+}
+
+function getInstrHoje(){
+  return DIA_INSTRUMENTO[new Date().getDay()];
+}
+
+// ═══════════════════════════════════════════════════════════
+// HUD
+// ═══════════════════════════════════════════════════════════
+function renderHUD(){
+  const sem = getSemanaAtual();
+  const diasFeitos = sem ? Object.keys(sem.dias).length : 0;
+  const score = sem&&sem.scoreGeral!=null ? sem.scoreGeral : (sem ? calcScoreParcial(sem) : null);
+
+  document.getElementById("hud-score").textContent = score!=null ? Math.round(score) : "—";
+  document.getElementById("hud-prog-txt").textContent = `${diasFeitos}/6 instrumentos`;
+  document.getElementById("hud-bar").style.width = (diasFeitos/6*100)+"%";
+
+  // Rank por letra
+  const rank = score==null?"—":score>=90?"S":score>=80?"A":score>=70?"B":score>=60?"C":"D";
+  document.getElementById("hud-rank").innerHTML = rank+"<small>RANK</small>";
+
+  // Chips
+  const chips = document.getElementById("hud-chips");
+  const scores7 = estado.semanas.slice(0,4).filter(s=>s.scoreGeral!=null).map(s=>s.scoreGeral);
+  const media7 = scores7.length ? Math.round(scores7.reduce((a,b)=>a+b,0)/scores7.length) : null;
+
+  chips.innerHTML = `
+    ${estado.streak>0?`<span class="chip fire"><b>${estado.streak}</b> streak</span>`:""}
+    ${media7!=null?`<span class="chip"><b>${media7}</b> média 4sem</span>`:""}
+    <span class="chip"><b>${estado.semanas.filter(s=>s.scoreGeral!=null).length}</b> semanas completas</span>
+    ${estado.recordes.scoreGeral!=null?`<span class="chip gold"><b>${Math.round(estado.recordes.scoreGeral)}</b> recorde</span>`:""}
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SEMANA VISUAL
+// ═══════════════════════════════════════════════════════════
+function renderSemanaVisual(){
+  const sem = getSemanaAtual();
+  const hoje_ymd = hoje();
+  const agora = new Date();
+  const diaSemana = agora.getDay(); // 0=dom
+  const grid = document.getElementById("week-grid");
+  grid.innerHTML = "";
+
+  for(let d=1;d<=7;d++){ // seg a dom
+    const diasDiff = ((d===7?0:d) - diaSemana + 7)%7; // 0=hoje
+    const dt = new Date(agora);
+    dt.setDate(dt.getDate() - (d===7?diaSemana:(diaSemana-d+7)%7 ));
+    // recalcula corretamente
+    const offset = (d===7?0:d) - diaSemana;
+    const dtCorr = new Date(agora);
+    dtCorr.setDate(dtCorr.getDate() + offset);
+    const dstr = ymd(dtCorr);
+    const isHoje = dstr === hoje_ymd;
+    const isFuturo = dtCorr > agora && !isHoje;
+    const instrIdx = DIA_INSTRUMENTO[d===7?0:d];
+    const instr = INSTRUMENTOS[instrIdx];
+    const feito = sem && sem.dias && sem.dias[dstr];
+    const nomeDia = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"][d===7?0:d];
+
+    const box = document.createElement("div");
+    box.className = "week-day"+(isHoje?" today":"")+(feito?" done-day":isFuturo?" pending":"");
+    box.innerHTML = `
+      <div class="wd-name">${nomeDia}</div>
+      <div class="wd-inst" style="color:${instr.cor}">${instr.ico} ${instr.nome.split(" ")[0]}</div>
+      <div class="wd-score">${feito?Math.round(feito.score):"·"}</div>
+    `;
+    if(feito) box.onclick = ()=>abrirDetalhe(dstr, feito);
+    grid.appendChild(box);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHECK-IN DO DIA
+// ═══════════════════════════════════════════════════════════
+let checkinState = {};
+
+function renderCheckin(){
+  const sem = getSemanaAtual();
+  const hj = hoje();
+  const instrIdx = getInstrHoje();
+  const instr = INSTRUMENTOS[instrIdx];
+  const jaFeito = sem && sem.dias && sem.dias[hj];
+
+  document.getElementById("checkin-title").textContent = instr.ico+" "+instr.nome.toUpperCase();
+
+  if(jaFeito){
+    document.getElementById("checkin-body").innerHTML = `
+      <div class="result-score">${Math.round(jaFeito.score)}</div>
+      <div class="result-label">CONCLUÍDO HOJE</div>
+      <div class="dim-grid" style="margin-top:14px">${renderDimBoxes(jaFeito)}</div>
+      <div style="margin-top:12px;font-size:.8rem;color:var(--muted);letter-spacing:.04em">
+        ${fmtData(hj)} — volte amanhã para continuar.
+      </div>
+    `;
+    return;
+  }
+
+  if(instrIdx === 6){ // Síntese (Domingo)
+    renderSintese();
+    return;
+  }
+
+  checkinState = { instrIdx, passo:0, respostas:{} };
+  renderPassoCheckin();
+}
+
+function renderPassoCheckin(){
+  const { instrIdx, passo } = checkinState;
+  const body = document.getElementById("checkin-body");
+
+  // Passo 0 = contexto rápido (sempre, exceto síntese)
+  if(passo === 0){
+    body.innerHTML = `
+      <div class="step-label">PASSO 1 — CONTEXTO RÁPIDO</div>
+      <div class="steps">${stepsHtml(4,0)}</div>
+      <label class="f"><span>Energia agora (1–10)</span>
+        <input type="number" id="ci-energia" min="1" max="10" placeholder="Ex: 7">
+      </label>
+      <div class="row2">
+        <label class="f"><span>Sono ontem (horas)</span>
+          <input type="number" id="ci-sono" min="0" max="14" step="0.5" placeholder="Ex: 7.5">
+        </label>
+        <label class="f"><span>HRV (ms)</span>
+          <input type="number" id="ci-hrv" min="10" max="120" placeholder="Ex: 32">
+        </label>
+      </div>
+      <label class="f"><span>Tomou medicação hoje?</span>
+        <select id="ci-med">
+          <option value="">Selecione</option>
+          <option value="sim">Sim, no horário</option>
+          <option value="atrasado">Sim, com atraso</option>
+          <option value="nao">Não</option>
+        </select>
+      </label>
+      <div class="btn-row">
+        <button class="btn wide" onclick="avancarContexto()">AVANÇAR →</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Passos específicos por instrumento
+  switch(instrIdx){
+    case 0: renderContextoCompleto(); break;
+    case 1: renderDigitSpan(); break;
+    case 2: renderStroopArit(); break;
+    case 3: renderFluencia(); break;
+    case 4: renderBrief(); break;
+    case 5: renderASRS(); break;
+  }
+}
+
+function stepsHtml(total, atual){
+  let h = "";
+  for(let i=0;i<total;i++){
+    h += `<div class="step-dot ${i<atual?"done":i===atual?"active":""}"></div>`;
+    if(i<total-1) h += `<div class="step-line"></div>`;
+  }
+  return h;
+}
+
+function avancarContexto(){
+  const e = parseInt(document.getElementById("ci-energia")?.value)||null;
+  const s = parseFloat(document.getElementById("ci-sono")?.value)||null;
+  const h = parseInt(document.getElementById("ci-hrv")?.value)||null;
+  const m = document.getElementById("ci-med")?.value||null;
+  checkinState.respostas.contextoRapido = { energia:e, sono:s, hrv:h, med:m };
+  checkinState.passo = 1;
+  renderPassoCheckin();
+}
+
+// ── CONTEXTO COMPLETO (Segunda) ──────────────────────────
+function renderContextoCompleto(){
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">CONTEXTO & GARMIN — ÚLTIMAS 4 SEMANAS</div>
+    <div class="steps">${stepsHtml(4,1)}</div>
+    <div class="row2">
+      <label class="f"><span>HRV Médio (ms)</span><input type="number" id="cc-hrv" placeholder="Ex: 38"></label>
+      <label class="f"><span>FC Repouso (bpm)</span><input type="number" id="cc-fc" placeholder="Ex: 58"></label>
+    </div>
+    <div class="row2">
+      <label class="f"><span>Sleep Score Médio</span><input type="number" id="cc-sleep" min="0" max="100" placeholder="Ex: 84"></label>
+      <label class="f"><span>Body Battery Manhã</span><input type="number" id="cc-bb" min="0" max="100" placeholder="Ex: 72"></label>
+    </div>
+    <div class="row2">
+      <label class="f"><span>Estresse Médio</span><input type="number" id="cc-stress" min="0" max="100" placeholder="Ex: 28"></label>
+      <label class="f"><span>Pico de Estresse</span><input type="number" id="cc-pico" min="0" max="100" placeholder="Ex: 34"></label>
+    </div>
+    <label class="f"><span>Contexto geral desta semana</span>
+      <textarea id="cc-ctx" placeholder="Estado emocional, eventos relevantes, mudanças de rotina..."></textarea>
+    </label>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="checkinState.passo=0;renderPassoCheckin()">← VOLTAR</button>
+      <button class="btn wide" onclick="finalizarContexto()">CONCLUIR →</button>
+    </div>
+  `;
+}
+
+function finalizarContexto(){
+  const r = {
+    hrv:parseInt(document.getElementById("cc-hrv")?.value)||null,
+    fc:parseInt(document.getElementById("cc-fc")?.value)||null,
+    sleep:parseInt(document.getElementById("cc-sleep")?.value)||null,
+    bb:parseInt(document.getElementById("cc-bb")?.value)||null,
+    stress:parseInt(document.getElementById("cc-stress")?.value)||null,
+    pico:parseInt(document.getElementById("cc-pico")?.value)||null,
+    ctx:document.getElementById("cc-ctx")?.value||null,
+  };
+  checkinState.respostas.garmin = r;
+  const score = calcScoreContexto(r, checkinState.respostas.contextoRapido);
+  salvarDia(score, "Contexto & Garmin", {garmin:r, contextoRapido:checkinState.respostas.contextoRapido});
+}
+
+function calcScoreContexto(g, cr){
+  let pts = 0, max = 0;
+  if(cr){
+    if(cr.energia!=null){ pts += Math.min(cr.energia,10)/10*25; max+=25; }
+    if(cr.sono!=null){ const sv=Math.min(cr.sono/8,1); pts+=sv*20; max+=20; }
+  }
+  if(g){
+    if(g.hrv!=null){ const hv=Math.min(g.hrv/45,1); pts+=hv*30; max+=30; }
+    if(g.sleep!=null){ const sv=Math.min(g.sleep/90,1); pts+=sv*15; max+=15; }
+    if(g.stress!=null){ const sv=Math.max(0,(100-g.stress)/100); pts+=sv*10; max+=10; }
+  }
+  return max>0 ? Math.round(pts/max*100) : null;
+}
+
+// ── DIGIT SPAN (Terça) ───────────────────────────────────
+let digitStep = {modo:"fwd", nivel:0, acertos:0, erros:0};
+
+function renderDigitSpan(){
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">DIGIT SPAN — MEMÓRIA DE TRABALHO</div>
+    <div class="steps">${stepsHtml(4,1)}</div>
+    <div style="font-size:.85rem;color:var(--text-2);margin-bottom:12px;line-height:1.5">
+      <b>Forward:</b> repita na mesma ordem. <b>Backward:</b> repita invertido.<br>
+      Leia em voz alta, depois cubra a tela e repita.
+    </div>
+    <div id="digit-area"></div>
+  `;
+  digitStep = {modo:"fwd", nivel:0, acertos:0, erros:0, fwdMax:0, bwdMax:0};
+  mostrarDigitNivel();
+}
+
+function mostrarDigitNivel(){
+  const area = document.getElementById("digit-area");
+  if(!area) return;
+  const seq = digitStep.modo==="fwd" ? DIGIT_FWD[digitStep.nivel] : DIGIT_BWD[digitStep.nivel];
+  if(!seq){
+    if(digitStep.modo==="fwd"){
+      digitStep.modo="bwd"; digitStep.nivel=0; digitStep.errosNivel=0;
+      toast("FORWARD","Agora repita na ordem INVERSA.","");
+      mostrarDigitNivel();
+    } else {
+      finalizarDigit();
+    }
+    return;
+  }
+  const label = digitStep.modo==="fwd"?"FORWARD — Nível "+(digitStep.nivel+3):"BACKWARD — Nível "+(digitStep.nivel+2);
+  area.innerHTML = `
+    <div class="slotlabel">${label}</div>
+    <div class="stim" id="digit-stim">${seq.join(" – ")}</div>
+    <div style="text-align:center;margin:10px 0">
+      <button class="btn ghost" onclick="revelarDigit()">👁 Mostrei — pronto para responder</button>
+    </div>
+    <div id="digit-resp" hidden>
+      <div style="font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:10px">Você acertou?</div>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn ok-btn" onclick="respDigit(true)">✓ SIM</button>
+        <button class="btn warn" onclick="respDigit(false)">✗ NÃO</button>
+      </div>
+    </div>
+  `;
+}
+
+function revelarDigit(){
+  document.getElementById("digit-stim")?.classList.add("hidden");
+  document.getElementById("digit-resp").hidden = false;
+}
+
+function respDigit(acertou){
+  if(acertou){
+    if(digitStep.modo==="fwd") digitStep.fwdMax = digitStep.nivel+3;
+    else digitStep.bwdMax = digitStep.nivel+2;
+    digitStep.nivel++;
+    digitStep.errosNivel=0;
+  } else {
+    digitStep.errosNivel = (digitStep.errosNivel||0)+1;
+    if(digitStep.errosNivel>=2){
+      if(digitStep.modo==="fwd"){
+        digitStep.modo="bwd"; digitStep.nivel=0; digitStep.errosNivel=0;
+        toast("FORWARD CONCLUÍDO","Resultado: "+digitStep.fwdMax+" dígitos. Iniciando Backward.","");
+      } else { finalizarDigit(); return; }
+    }
+  }
+  mostrarDigitNivel();
+}
+
+function finalizarDigit(){
+  const fwd = digitStep.fwdMax;
+  const bwd = digitStep.bwdMax;
+  // Score: fwd baseline 7, bwd baseline 6
+  const scoreFwd = Math.min(fwd/9,1)*50;
+  const scoreBwd = Math.min(bwd/8,1)*50;
+  const score = Math.round(scoreFwd+scoreBwd);
+  checkinState.respostas.digit = {fwd, bwd, score};
+  salvarDia(score, "Digit Span", checkinState.respostas);
+}
+
+// ── STROOP + ARITMÉTICA (Quarta) ─────────────────────────
+let timerInterval = null;
+let timerSec = 0;
+
+function renderStroopArit(){
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">STROOP — CONTROLE INIBITÓRIO</div>
+    <div class="steps">${stepsHtml(4,1)}</div>
+    <div style="font-size:.82rem;color:var(--text-2);margin-bottom:10px">
+      Diga em voz alta a <b>COR DA TINTA</b> (não a palavra). Clique em Iniciar quando pronto.
+    </div>
+    <div class="stim" style="font-size:1.4rem;letter-spacing:.05em;line-height:2">
+      <span style="color:#e53e3e">AZUL</span> &nbsp;
+      <span style="color:#2b6cb0">VERDE</span> &nbsp;
+      <span style="color:#276749">VERMELHO</span> &nbsp;
+      <span style="color:#744210">AZUL</span> &nbsp;
+      <span style="color:#e53e3e">PRETO</span><br>
+      <span style="color:#276749">AMARELO</span> &nbsp;
+      <span style="color:#2b6cb0">VERMELHO</span> &nbsp;
+      <span style="color:#744210">VERDE</span>
+    </div>
+    <div class="timer-big" id="stroop-timer">15</div>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn" id="stroop-btn" onclick="iniciarStroopTimer()">▶ INICIAR (15s)</button>
+    </div>
+    <div id="stroop-resp" hidden>
+      <label class="f" style="margin-top:12px"><span>Quantas acertou? (máx 8)</span>
+        <input type="number" id="stroop-val" min="0" max="8" placeholder="Ex: 8">
+      </label>
+      <button class="btn wide" onclick="avancarParaArit()">PRÓXIMO →</button>
+    </div>
+  `;
+}
+
+function iniciarStroopTimer(){
+  let sec = 15;
+  document.getElementById("stroop-btn").disabled = true;
+  const el = document.getElementById("stroop-timer");
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    sec--;
+    el.textContent = sec;
+    if(sec<=5) el.className="timer-big urgent";
+    if(sec<=0){
+      clearInterval(timerInterval);
+      el.textContent="TEMPO!"; el.className="timer-big done";
+      document.getElementById("stroop-resp").hidden=false;
+    }
+  },1000);
+}
+
+function avancarParaArit(){
+  const v = parseInt(document.getElementById("stroop-val")?.value)||0;
+  checkinState.respostas.stroop = v;
+  renderAritmetica();
+}
+
+function renderAritmetica(){
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">ARITMÉTICA — VELOCIDADE DE PROCESSAMENTO</div>
+    <div class="steps">${stepsHtml(4,2)}</div>
+    <div style="font-size:.82rem;color:var(--text-2);margin-bottom:10px">
+      Resolva mentalmente. Inicie o cronômetro, responda todos, pare quando terminar.
+    </div>
+    <div class="stim" style="font-size:1.1rem">
+      17 × 4 = ? &nbsp;|&nbsp; 144 ÷ 12 = ? &nbsp;|&nbsp; 38 + 67 = ?<br>
+      250 − 83 = ? &nbsp;|&nbsp; 15% de 280 = ?
+    </div>
+    <div style="font-size:.75rem;color:var(--muted);text-align:center;margin:6px 0">Gabaritos: 68 · 12 · 105 · 167 · 42</div>
+    <div class="timer-big" id="arit-timer">0</div>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn" id="arit-start" onclick="iniciarAritTimer()">▶ INICIAR</button>
+      <button class="btn warn" id="arit-stop" onclick="pararAritTimer()" disabled>■ PARAR</button>
+    </div>
+    <div id="arit-resp" hidden style="margin-top:12px">
+      <label class="f"><span>Acertos (máx 5)</span>
+        <input type="number" id="arit-val" min="0" max="5" placeholder="Ex: 5">
+      </label>
+      <button class="btn wide" onclick="finalizarStroopArit()">CONCLUIR →</button>
+    </div>
+  `;
+  timerSec = 0;
+}
+
+function iniciarAritTimer(){
+  document.getElementById("arit-start").disabled=true;
+  document.getElementById("arit-stop").disabled=false;
+  const el = document.getElementById("arit-timer");
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    timerSec++;
+    el.textContent=timerSec;
+  },1000);
+}
+function pararAritTimer(){
+  clearInterval(timerInterval);
+  document.getElementById("arit-stop").disabled=true;
+  document.getElementById("arit-resp").hidden=false;
+}
+
+function finalizarStroopArit(){
+  const stroop = checkinState.respostas.stroop||0;
+  const arit = parseInt(document.getElementById("arit-val")?.value)||0;
+  const tempo = timerSec;
+  // Score: stroop 50%, aritmética 30%, velocidade 20%
+  const scoreStroop = (stroop/8)*50;
+  const scoreArit = (arit/5)*30;
+  const scoreVel = tempo>0 ? Math.max(0,(1-tempo/180))*20 : 0;
+  const score = Math.round(scoreStroop+scoreArit+scoreVel);
+  salvarDia(score, "Stroop + Aritmética", {stroop, arit, tempo, contextoRapido:checkinState.respostas.contextoRapido});
+}
+
+// ── FLUÊNCIA + ANALOGIAS (Quinta) ───────────────────────
+function renderFluencia(){
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">FLUÊNCIA SEMÂNTICA</div>
+    <div class="steps">${stepsHtml(4,1)}</div>
+    <div style="font-size:.82rem;color:var(--text-2);margin-bottom:10px">
+      Em <b>60 segundos</b>, diga o maior número de animais possível. Clique em Iniciar.
+    </div>
+    <div class="timer-big" id="flu-timer">60</div>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn" id="flu-btn" onclick="iniciarFluTimer()">▶ INICIAR (60s)</button>
+    </div>
+    <div id="flu-resp" hidden style="margin-top:12px">
+      <label class="f"><span>Total de animais válidos</span>
+        <input type="number" id="flu-val" min="0" max="50" placeholder="Ex: 11">
+      </label>
+      <label class="f"><span>Observação (opcional)</span>
+        <input type="text" id="flu-obs" placeholder="Ex: incluiu habitats">
+      </label>
+      <button class="btn wide" onclick="avancarParaAnalogias()">PRÓXIMO →</button>
+    </div>
+  `;
+}
+
+function iniciarFluTimer(){
+  let sec=60;
+  document.getElementById("flu-btn").disabled=true;
+  const el=document.getElementById("flu-timer");
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    sec--;
+    el.textContent=sec;
+    if(sec<=10) el.className="timer-big urgent";
+    if(sec<=0){clearInterval(timerInterval);el.textContent="TEMPO!";el.className="timer-big done";document.getElementById("flu-resp").hidden=false;}
+  },1000);
+}
+
+function avancarParaAnalogias(){
+  checkinState.respostas.fluencia = {
+    val: parseInt(document.getElementById("flu-val")?.value)||0,
+    obs: document.getElementById("flu-obs")?.value||""
+  };
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">ANALOGIAS VERBAIS</div>
+    <div class="steps">${stepsHtml(4,2)}</div>
+    <div class="stim" style="font-size:.9rem;text-align:left;line-height:2.2">
+      1. Médico → hospital · Professor → _____<br>
+      2. Alegria → choro · Medo → _____<br>
+      3. Lua → noite · Sol → _____<br>
+      4. Advogado → lei · Médico → _____<br>
+      5. Livro → ler · Música → _____
+    </div>
+    <div style="font-size:.7rem;color:var(--muted);margin:6px 0">Gabaritos: escola · tremor · dia · medicina · ouvir</div>
+    <label class="f"><span>Acertos (máx 5)</span>
+      <input type="number" id="anal-val" min="0" max="5" placeholder="Ex: 4">
+    </label>
+    <button class="btn wide" onclick="finalizarFluencia()">CONCLUIR →</button>
+  `;
+}
+
+function finalizarFluencia(){
+  const flu = checkinState.respostas.fluencia?.val||0;
+  const anal = parseInt(document.getElementById("anal-val")?.value)||0;
+  // Score: fluência 60% (baseline 11), analogias 40% (baseline 4/5)
+  const scoreFlu = Math.min(flu/15,1)*60;
+  const scoreAnal = (anal/5)*40;
+  const score = Math.round(scoreFlu+scoreAnal);
+  salvarDia(score, "Fluência + Analogias", {flu:checkinState.respostas.fluencia, anal, contextoRapido:checkinState.respostas.contextoRapido});
+}
+
+// ── BRIEF-A (Sexta) ──────────────────────────────────────
+let briefResps = {};
+function renderBrief(){
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">BRIEF-A — FUNÇÕES EXECUTIVAS</div>
+    <div class="steps">${stepsHtml(4,1)}</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-bottom:10px">0=Nunca · 1=Às vezes · 2=Frequentemente · 3=Sempre</div>
+    <div id="brief-itens"></div>
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn wide" onclick="finalizarBrief()">CONCLUIR →</button>
+    </div>
+  `;
+  briefResps = {};
+  const c = document.getElementById("brief-itens");
+  let lastCat = "";
+  BRIEF_Q.forEach((item,i)=>{
+    if(item.cat!==lastCat){
+      const h=document.createElement("div");
+      h.style.cssText="font-size:.65rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;padding:8px 0 4px;border-top:1px solid rgba(94,199,255,.1);margin-top:10px;font-family:var(--f-d)";
+      h.textContent=item.cat; c.appendChild(h); lastCat=item.cat;
+    }
+    const div=document.createElement("div");
+    div.className="q-item"; div.id="bq"+i;
+    div.innerHTML=`<div class="q-num">B${i+1}</div><div class="q-text">${item.q}</div>
+      <div class="scale-wrap">${["0 Nunca","1 Às vezes","2 Frequente","3 Sempre"].map((o,v)=>
+        `<div class="scale-opt" data-idx="${i}" data-val="${v}" onclick="selBrief(this,${i},${v})">${o}</div>`).join("")}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function selBrief(el,idx,val){
+  briefResps[idx]=val;
+  document.querySelectorAll(`.scale-opt[data-idx="${idx}"]`).forEach(e=>e.classList.remove("sel"));
+  el.classList.add("sel");
+  document.getElementById("bq"+idx)?.classList.add("answered");
+}
+
+function finalizarBrief(){
+  const vals = Object.values(briefResps);
+  if(vals.length<14){ toast("ATENÇÃO","Responda todos os 14 itens antes de concluir.","bad"); return; }
+  const total = vals.reduce((a,b)=>a+b,0);
+  const pct = Math.round(total/(14*3)*100);
+  // Score: inverso do comprometimento. 100 = zero comprometimento.
+  const score = 100 - pct;
+  salvarDia(score, "BRIEF-A", {total, pct, resps:briefResps, contextoRapido:checkinState.respostas.contextoRapido});
+}
+
+// ── ASRS-18 (Sábado) ─────────────────────────────────────
+let asrsResps = {};
+function renderASRS(){
+  document.getElementById("checkin-body").innerHTML = `
+    <div class="step-label">ASRS-18 — TDAH</div>
+    <div class="steps">${stepsHtml(4,1)}</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-bottom:10px">0=Nunca · 1=Raramente · 2=Às vezes · 3=Frequentemente · 4=Sempre</div>
+    <div style="font-size:.7rem;letter-spacing:.1em;color:var(--cyan);margin-bottom:8px;font-family:var(--f-d)">DESATENÇÃO</div>
+    <div id="asrs-des-itens"></div>
+    <div style="font-size:.7rem;letter-spacing:.1em;color:var(--danger);margin:12px 0 8px;font-family:var(--f-d)">HIPERATIVIDADE / IMPULSIVIDADE</div>
+    <div id="asrs-hiper-itens"></div>
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn wide" onclick="finalizarASRS()">CONCLUIR →</button>
+    </div>
+  `;
+  asrsResps = {};
+  const buildGrp = (qs, grp, container) => {
+    qs.forEach((q,i)=>{
+      const div=document.createElement("div");
+      div.className="q-item"; div.id=`asrs-${grp}-${i}`;
+      div.innerHTML=`<div class="q-num">${grp==="des"?"D":"H"}${i+1}</div><div class="q-text">${q}</div>
+        <div class="scale-wrap">${["0","1","2","3","4"].map((v,vi)=>
+          `<div class="scale-opt" data-g="${grp}" data-i="${i}" data-v="${vi}" onclick="selASRS(this,'${grp}',${i},${vi})">${["Nunca","Raramente","Às vezes","Frequente","Sempre"][vi]}</div>`).join("")}</div>`;
+      document.getElementById(container).appendChild(div);
+    });
+  };
+  buildGrp(ASRS_DES,"des","asrs-des-itens");
+  buildGrp(ASRS_HIPER,"hiper","asrs-hiper-itens");
+}
+
+function selASRS(el,grp,idx,val){
+  const key=grp+idx;
+  asrsResps[key]=val;
+  document.querySelectorAll(`.scale-opt[data-g="${grp}"][data-i="${idx}"]`).forEach(e=>e.classList.remove("sel"));
+  el.classList.add("sel");
+  document.getElementById(`asrs-${grp}-${idx}`)?.classList.add("answered");
+}
+
+function finalizarASRS(){
+  let des=0,desC=0,hiper=0,hiperC=0;
+  ASRS_DES.forEach((_,i)=>{ const v=asrsResps["des"+i]; if(v!=null){des+=v;desC++;} });
+  ASRS_HIPER.forEach((_,i)=>{ const v=asrsResps["hiper"+i]; if(v!=null){hiper+=v;hiperC++;} });
+  if(desC<9||hiperC<9){ toast("ATENÇÃO","Responda todos os 18 itens.","bad"); return; }
+  const total=des+hiper;
+  const pctDes=Math.round(des/36*100);
+  const pctHiper=Math.round(hiper/36*100);
+  const pctTotal=Math.round(total/72*100);
+  // Score: inverso. Baseline: des 61%, hiper 97%
+  const score = 100 - pctTotal;
+  salvarDia(score, "ASRS-18", {des,hiper,total,pctDes,pctHiper,pctTotal,resps:asrsResps,contextoRapido:checkinState.respostas.contextoRapido});
+}
+
+// ── SÍNTESE (Domingo) ────────────────────────────────────
+function renderSintese(){
+  const sem = getSemanaAtual();
+  if(!sem || Object.keys(sem.dias||{}).length<3){
+    document.getElementById("checkin-body").innerHTML = `
+      <div class="empty">Complete ao menos 3 instrumentos durante a semana para gerar a síntese automática no domingo.</div>
+    `;
+    return;
+  }
+  const score = calcScoreParcial(sem);
+  // Salva síntese
+  sem.scoreGeral = score;
+  sem.sinteseEm = Date.now();
+  atualizarStreak();
+  verificarRecorde(score);
+  lsSet(estado);
+  renderResultado(score, "Síntese Semanal", sem);
+}
+
+function calcScoreParcial(sem){
+  if(!sem||!sem.dias) return null;
+  const dias = Object.values(sem.dias);
+  if(!dias.length) return null;
+  return Math.round(dias.reduce((a,d)=>a+d.score,0)/dias.length);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SALVAR DIA
+// ═══════════════════════════════════════════════════════════
+function salvarDia(score, instrNome, dados){
+  const hj = hoje();
+  const sem = getOuCriarSemana();
+  sem.dias = sem.dias||{};
+  sem.dias[hj] = { score, instrNome, dados, em:Date.now() };
+  // Se é domingo e todos os instrumentos (6 dias de seg a sab) feitos, calcula score geral
+  const diasFeitos = Object.keys(sem.dias).length;
+  if(diasFeitos>=6){
+    sem.scoreGeral = calcScoreParcial(sem);
+    atualizarStreak();
+    verificarRecorde(sem.scoreGeral);
+  }
+  const ok = lsSet(estado);
+  if(ok) toast("SALVO","Instrumento registrado com sucesso!","");
+  renderResultado(score, instrNome, dados);
+}
+
+function atualizarStreak(){
+  const sid = semanaId();
+  const idx = estado.semanas.findIndex(s=>s.id===sid);
+  if(idx>0){
+    const anterior = estado.semanas[idx+1];
+    // semana anterior tem score?
+    if(anterior&&anterior.scoreGeral!=null) estado.streak++;
+    else estado.streak=1;
+  } else { estado.streak=1; }
+  if(estado.streak>estado.melhorStreak) estado.melhorStreak=estado.streak;
+}
+
+function verificarRecorde(score){
+  if(!score) return;
+  if(!estado.recordes.scoreGeral||score>estado.recordes.scoreGeral){
+    estado.recordes.scoreGeral=score;
+    document.getElementById("lu-val").textContent=Math.round(score);
+    document.getElementById("levelup").hidden=false;
+    toast("NOVO RECORDE","Score semanal: "+Math.round(score),"gold");
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESULTADO APÓS INSTRUMENTO
+// ═══════════════════════════════════════════════════════════
+function renderResultado(score, instrNome, dados){
+  const body = document.getElementById("checkin-body");
+  const dim = renderDimBoxes({score, instrNome, dados});
+  body.innerHTML = `
+    <div class="result-label">${instrNome.toUpperCase()} — CONCLUÍDO</div>
+    <div class="result-score">${Math.round(score)}</div>
+    <div class="result-label">SCORE DO DIA</div>
+    <div class="dim-grid" style="margin-top:14px">${dim}</div>
+    <div style="margin-top:16px;font-size:.78rem;color:var(--muted);text-align:center">
+      Volte amanhã para o próximo instrumento.
+    </div>
+    <button class="btn wide" style="margin-top:12px" onclick="switchTab('historico',document.querySelector('.tabs button:nth-child(2))'))">VER HISTÓRICO</button>
+  `;
+  renderHUD();
+  renderSemanaVisual();
+}
+
+function renderDimBoxes(dia){
+  const s = dia.score||0;
+  const cor = s>=80?"var(--ok)":s>=60?"var(--cyan)":s>=40?"var(--gold)":"var(--danger)";
+  return `
+    <div class="dim-box">
+      <div class="dim-val" style="color:${cor}">${Math.round(s)}</div>
+      <div class="dim-lbl">SCORE</div>
+      <div class="dim-bar"><i style="width:${s}%;background:${cor}"></i></div>
+    </div>
+    <div class="dim-box">
+      <div class="dim-val" style="color:var(--text-2)">${dia.instrNome||"—"}</div>
+      <div class="dim-lbl">INSTRUMENTO</div>
+    </div>
+    <div class="dim-box">
+      <div class="dim-val" style="color:var(--muted);font-size:1rem">${new Date(dia.em||Date.now()).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
+      <div class="dim-lbl">HORÁRIO</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// HISTÓRICO
+// ═══════════════════════════════════════════════════════════
+function renderHistorico(){
+  const lista = document.getElementById("hist-lista");
+  const cnt = document.getElementById("hist-cnt");
+  const todasSemanas = estado.semanas;
+  if(!todasSemanas.length){
+    lista.innerHTML=`<div class="empty">Nenhum registro ainda. Complete o primeiro instrumento hoje.</div>`;
+    cnt.textContent=""; return;
+  }
+
+  let totalDias=0, html="";
+  let mesAtual="";
+
+  todasSemanas.forEach(sem=>{
+    if(!sem.dias||!Object.keys(sem.dias).length) return;
+    const diasSem = Object.entries(sem.dias).sort((a,b)=>b[0].localeCompare(a[0]));
+    diasSem.forEach(([d,info])=>{
+      const dt = new Date(d+"T12:00:00");
+      const mes = mesNome(dt.getMonth())+" "+dt.getFullYear();
+      if(mes!==mesAtual){
+        html+=`<div class="slotlabel">${mes}</div>`;
+        mesAtual=mes;
+      }
+      const s=info.score||0;
+      const cls=s>=70?"done":s<50?"late":"avg";
+      totalDias++;
+      html+=`
+        <div class="q ${cls}" onclick="abrirDetalhe('${d}',${JSON.stringify(info).replace(/'/g,"&#39;")})">
+          <div class="qhead">
+            <div class="qmain">
+              <div class="qname">${fmtData(d)}</div>
+              <div class="qmeta">
+                <span class="${s>=70?'ok':s<50?'d':'s'}">${info.instrNome||"—"}</span>
+                <span>${new Date(info.em||0).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</span>
+              </div>
+            </div>
+            <div class="qscore">${Math.round(s)}<small>SCORE</small></div>
+          </div>
+          <div class="qbar"><i style="width:${s}%"></i></div>
+        </div>`;
+    });
+    if(sem.scoreGeral!=null){
+      html+=`<div class="slotlabel">SÍNTESE — SEMANA ${sem.id} · Score ${Math.round(sem.scoreGeral)}</div>`;
+    }
+  });
+
+  lista.innerHTML=html;
+  cnt.textContent=`· ${totalDias} registros`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DETALHE DO DIA
+// ═══════════════════════════════════════════════════════════
+function abrirDetalhe(d, info){
+  const s = info.score||0;
+  const cor=s>=80?"var(--ok)":s>=60?"var(--cyan)":s>=40?"var(--gold)":"var(--danger)";
+  let html=`
+    <div style="text-align:center;margin:16px 0">
+      <div style="font-family:var(--f-d);font-size:3rem;font-weight:700;color:${cor};font-variant-numeric:tabular-nums">${Math.round(s)}</div>
+      <div style="font-size:.75rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase">Score — ${info.instrNome||""}</div>
+      <div style="font-size:.8rem;color:var(--text-2);margin-top:6px">${fmtData(d)}</div>
+    </div>`;
+
+  const dados = info.dados||{};
+  if(dados.contextoRapido){
+    const cr=dados.contextoRapido;
+    html+=`<div class="slotlabel">CONTEXTO RÁPIDO</div>
+      <div class="chips">
+        ${cr.energia!=null?`<span class="chip"><b>${cr.energia}/10</b> energia</span>`:""}
+        ${cr.sono!=null?`<span class="chip"><b>${cr.sono}h</b> sono</span>`:""}
+        ${cr.hrv!=null?`<span class="chip"><b>${cr.hrv}ms</b> HRV</span>`:""}
+        ${cr.med?`<span class="chip"><b>med:</b> ${cr.med}</span>`:""}
+      </div>`;
+  }
+  if(info.instrNome==="Digit Span"&&dados.digit){
+    html+=`<div class="slotlabel">DIGIT SPAN</div>
+      <div class="chips">
+        <span class="chip"><b>${dados.digit.fwd}</b> dígitos forward (base: 7)</span>
+        <span class="chip"><b>${dados.digit.bwd}</b> dígitos backward (base: 6)</span>
+      </div>`;
+  }
+  if(dados.pctHiper!=null){
+    html+=`<div class="slotlabel">ASRS</div>
+      <div class="chips">
+        <span class="chip"><b>${dados.pctDes}%</b> desatenção (base: 61%)</span>
+        <span class="chip ${dados.pctHiper>=80?"b-red":""}" ><b>${dados.pctHiper}%</b> hiperatividade (base: 97%)</span>
+      </div>`;
+  }
+  if(dados.pct!=null){
+    html+=`<div class="slotlabel">BRIEF-A</div>
+      <div class="chips"><span class="chip"><b>${dados.pct}%</b> comprometimento (base: 76%)</span></div>`;
+  }
+
+  document.getElementById("det-title").textContent = fmtData(d).toUpperCase();
+  document.getElementById("det-body").innerHTML = html;
+  document.getElementById("detalhe").hidden = false;
+}
+function fecharDetalhe(){ document.getElementById("detalhe").hidden=true; }
+
+// ═══════════════════════════════════════════════════════════
+// GRÁFICOS SVG
+// ═══════════════════════════════════════════════════════════
+let filtroAtual = 7;
+let tabelaAberta = false;
+
+function setFiltro(per, btn){
+  filtroAtual=per;
+  document.querySelectorAll(".chart-filters .btn").forEach(b=>b.classList.remove("active-f"));
+  btn.classList.add("active-f");
+  renderChips();
+  renderGraficos();
+}
+
+function getDadosFiltrados(){
+  const hoje_dt = new Date();
+  let semanas = estado.semanas.filter(s=>s.dias&&Object.keys(s.dias).length>0);
+  if(filtroAtual>0){
+    const limite = new Date(hoje_dt);
+    limite.setDate(limite.getDate()-filtroAtual);
+    semanas = semanas.filter(s=>new Date(s.id.replace("-W","")+"T12:00:00")>=limite||Object.keys(s.dias).some(d=>new Date(d+"T12:00:00")>=limite));
+  }
+  return semanas;
+}
+
+function cor(token){ return getComputedStyle(document.documentElement).getPropertyValue(token).trim(); }
+
+function svgLine(pts, W, H, pad, yMin, yMax, lineColor, fillColor){
+  if(!pts.length) return "";
+  const xStep = (W-2*pad)/(Math.max(pts.length-1,1));
+  const yRange = yMax-yMin||1;
+  const px = (i)=>pad+i*xStep;
+  const py = (v)=>pad+(H-2*pad)*(1-(v-yMin)/yRange);
+  let d="M"+px(0)+","+py(pts[0].v);
+  for(let i=1;i<pts.length;i++) d+=` L${px(i)},${py(pts[i].v)}`;
+  let fill="";
+  if(fillColor){
+    const fp=`${d} L${px(pts.length-1)},${H-pad} L${px(0)},${H-pad} Z`;
+    fill=`<path d="${fp}" fill="${fillColor}" stroke="none"/>`;
+  }
+  return fill+`<path d="${d}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linejoin="round"/>`;
+}
+
+function svgAxisH(labels, W, H, pad, muted){
+  return labels.map((l,i)=>{
+    const x=pad+i*(W-2*pad)/(Math.max(labels.length-1,1));
+    return `<text x="${x}" y="${H-4}" text-anchor="middle" fill="${muted}" font-size="10" font-family="Rajdhani,sans-serif">${l}</text>`;
+  }).join("");
+}
+
+function svgGrade(W,H,pad,steps,lineCol){
+  let h="";
+  for(let i=0;i<=steps;i++){
+    const y=pad+(H-2*pad)*(i/steps);
+    h+=`<line x1="${pad}" y1="${y}" x2="${W-pad}" y2="${y}" stroke="${lineCol}" stroke-width="1"/>`;
+  }
+  return h;
+}
+
+function renderGraficos(){
+  const sems = getDadosFiltrados();
+  const muted=cor("--muted"), text2=cor("--text-2"), s1=cor("--s1"), s2=cor("--s2"), s3=cor("--s3"), s4=cor("--s4"), lineCol="rgba(94,199,255,.08)";
+
+  // Gráfico 1: Score geral por semana
+  const pts1 = sems.filter(s=>s.scoreGeral!=null).reverse().map(s=>({label:s.id.split("-W")[1]+"ª",v:s.scoreGeral}));
+  renderChartScore(pts1, muted, text2, s1, lineCol);
+
+  // Mini gráficos por instrumento
+  renderMiniCharts(sems, muted, text2, [s1,s2,s3,s4]);
+
+  // Gráfico Garmin: HRV e sono
+  renderChartGarmin(sems, muted, text2, s1, s2, lineCol);
+
+  if(tabelaAberta) renderTabela(sems);
+}
+
+function renderChartScore(pts, muted, text2, lineCol, gradeCol){
+  const W=420,H=160,pad=32;
+  if(pts.length<2){
+    document.getElementById("chart-score").innerHTML=`<div class="empty">${pts.length===1?"Mais uma semana completa para ver a evolução.":"Nenhum dado no período."}</div>`;
+    return;
+  }
+  const vals=pts.map(p=>p.v);
+  const yMin=Math.max(0,Math.min(...vals)-10), yMax=Math.min(100,Math.max(...vals)+10);
+  const media=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  const mediaY=pad+(H-2*pad)*(1-(media-yMin)/(yMax-yMin||1));
+  const labels=pts.map(p=>p.label);
+  const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+    ${svgGrade(W,H,pad,4,gradeCol)}
+    <line x1="${pad}" y1="${mediaY}" x2="${W-pad}" y2="${mediaY}" stroke="${muted}" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="${W-pad+4}" y="${mediaY+4}" fill="${muted}" font-size="10" font-family="Rajdhani,sans-serif">med ${media}</text>
+    ${svgLine(pts,W,H,pad,yMin,yMax,lineCol,"rgba(47,149,219,.15)")}
+    ${svgAxisH(labels,W,H,pad,muted)}
+    ${pts.map((p,i)=>{
+      const xStep=(W-2*pad)/(Math.max(pts.length-1,1));
+      const x=pad+i*xStep, y=pad+(H-2*pad)*(1-(p.v-yMin)/(yMax-yMin||1));
+      const show=i===0||i===pts.length-1||p.v===Math.max(...vals);
+      return `<circle cx="${x}" cy="${y}" r="5" fill="${lineCol}" stroke="${lineCol}" stroke-width="2"/>
+        ${show?`<text x="${x}" y="${y-10}" text-anchor="middle" fill="${text2}" font-size="11" font-family="Chakra Petch,sans-serif" font-weight="600">${Math.round(p.v)}</text>`:""}`;
+    }).join("")}
+  </svg>`;
+  document.getElementById("chart-score").innerHTML=svg;
+}
+
+function renderMiniCharts(sems, muted, text2, cols){
+  const instrNomes=["Contexto","Digit Span","Stroop+Arit","Fluência","BRIEF-A","ASRS-18"];
+  const instrIds=["contexto","digit","stroop","fluencia","brief","asrs"];
+  const mc=document.getElementById("mini-charts");
+  mc.innerHTML="";
+  instrIds.forEach((id,ci)=>{
+    const pts=[];
+    sems.slice().reverse().forEach(sem=>{
+      if(!sem.dias) return;
+      Object.entries(sem.dias).forEach(([d,info])=>{
+        if((info.instrNome||"").toLowerCase().includes(instrNomes[ci].split("+")[0].toLowerCase().trim())){
+          pts.push({v:info.score||0,label:d.slice(5)});
+        }
+      });
+    });
+    const box=document.createElement("div");
+    box.className="mini-chart-box";
+    if(!pts.length){
+      box.innerHTML=`<div class="mini-chart-label" style="color:${cols[ci%4]}">${instrNomes[ci]}</div><div class="empty" style="padding:10px;font-size:.75rem">Sem dados</div>`;
+    } else {
+      const W=200,H=80,p=20;
+      const vals=pts.map(x=>x.v), yMn=Math.max(0,Math.min(...vals)-5), yMx=Math.min(100,Math.max(...vals)+5);
+      box.innerHTML=`<div class="mini-chart-label" style="color:${cols[ci%4]}">${instrNomes[ci]}</div>
+        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+          ${svgLine(pts,W,H,p,yMn,yMx,cols[ci%4],"")}
+          ${pts.map((pt,i)=>{const x=p+i*(W-2*p)/(Math.max(pts.length-1,1)),y=p+(H-2*p)*(1-(pt.v-yMn)/(yMx-yMn||1));return`<circle cx="${x}" cy="${y}" r="3" fill="${cols[ci%4]}"/>`;}).join("")}
+          <text x="${W-p}" y="${H-4}" text-anchor="end" fill="${muted}" font-size="9">${Math.round(pts[pts.length-1].v)}</text>
+        </svg>`;
+    }
+    mc.appendChild(box);
+  });
+}
+
+function renderChartGarmin(sems, muted, text2, col1, col2, gradeCol){
+  const ptsHRV=[], ptsSleep=[];
+  sems.slice().reverse().forEach(sem=>{
+    if(!sem.dias) return;
+    Object.values(sem.dias).forEach(d=>{
+      const g=d.dados?.garmin||d.dados?.contextoRapido;
+      if(g?.hrv) ptsHRV.push({v:g.hrv,label:""});
+      if(g?.sleep) ptsSleep.push({v:g.sleep,label:""});
+    });
+  });
+  if(!ptsHRV.length&&!ptsSleep.length){
+    document.getElementById("chart-garmin").innerHTML=`<div class="empty">Registre dados Garmin no instrumento Contexto (segundas-feiras).</div>`;
+    return;
+  }
+  const W=420,H=130,pad=32;
+  const all=[...ptsHRV,...ptsSleep].map(p=>p.v);
+  const yMin=Math.max(0,Math.min(...all)-5), yMax=Math.max(...all)+5;
+  const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    ${svgGrade(W,H,pad,3,gradeCol)}
+    <line x1="${pad}" y1="${pad+(H-2*pad)*(1-(45-yMin)/(yMax-yMin||1))}" x2="${W-pad}" y2="${pad+(H-2*pad)*(1-(45-yMin)/(yMax-yMin||1))}" stroke="${muted}" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="${W-pad+4}" y="${pad+(H-2*pad)*(1-(45-yMin)/(yMax-yMin||1))+4}" fill="${muted}" font-size="9">meta HRV 45ms</text>
+    ${ptsHRV.length>1?svgLine(ptsHRV,W,H,pad,yMin,yMax,col1,""):""}
+    ${ptsSleep.length>1?svgLine(ptsSleep,W,H,pad,yMin,yMax,col2,""):""}
+    <text x="${pad}" y="${H-4}" fill="${muted}" font-size="9" font-family="Rajdhani,sans-serif">— HRV(ms) &nbsp; — Sleep</text>
+  </svg>`;
+  document.getElementById("chart-garmin").innerHTML=svg;
+}
+
+function renderChips(){
+  const sems=getDadosFiltrados();
+  const scores=sems.filter(s=>s.scoreGeral!=null).map(s=>s.scoreGeral);
+  const melhor=scores.length?Math.max(...scores):null;
+  const media=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+  const totalDias=sems.reduce((a,s)=>a+Object.keys(s.dias||{}).length,0);
+  document.getElementById("evo-chips").innerHTML=`
+    ${melhor!=null?`<span class="chip gold"><b>${Math.round(melhor)}</b> melhor score</span>`:""}
+    ${media!=null?`<span class="chip"><b>${media}</b> média período</span>`:""}
+    <span class="chip"><b>${totalDias}</b> dias registrados</span>
+    <span class="chip fire"><b>${estado.streak}</b> streak</span>
+    ${estado.melhorStreak>0?`<span class="chip vi"><b>${estado.melhorStreak}</b> melhor streak</span>`:""}
+  `;
+}
+
+function toggleTabela(){
+  tabelaAberta=!tabelaAberta;
+  if(!tabelaAberta){ document.getElementById("tabela-wrap").hidden=true; return; }
+  const sems=getDadosFiltrados();
+  let rows="";
+  sems.forEach(sem=>{
+    if(!sem.dias) return;
+    Object.entries(sem.dias).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([d,info])=>{
+      rows+=`<tr><td>${fmtData(d)}</td><td>${info.instrNome||"—"}</td><td>${Math.round(info.score||0)}</td></tr>`;
+    });
+  });
+  document.getElementById("tabela-wrap").innerHTML=`
+    <table style="width:100%;border-collapse:collapse;font-size:.82rem;margin-top:12px">
+      <thead><tr style="color:var(--muted);font-size:.68rem;letter-spacing:.1em;font-family:var(--f-d)">
+        <th style="text-align:left;padding:6px">DATA</th>
+        <th style="text-align:left;padding:6px">INSTRUMENTO</th>
+        <th style="text-align:right;padding:6px">SCORE</th>
+      </tr></thead>
+      <tbody>${rows||"<tr><td colspan='3' style='padding:12px;color:var(--muted)'>Sem dados</td></tr>"}</tbody>
+    </table>`;
+  document.getElementById("tabela-wrap").hidden=false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// RANKING
+// ═══════════════════════════════════════════════════════════
+function renderRanking(){
+  const semsCompletas = estado.semanas.filter(s=>s.scoreGeral!=null).sort((a,b)=>b.scoreGeral-a.scoreGeral);
+  const lista=document.getElementById("rank-lista");
+  if(!semsCompletas.length){
+    lista.innerHTML=`<div class="empty">Complete sua primeira semana para aparecer no ranking.</div>`;
+  } else {
+    lista.innerHTML=semsCompletas.slice(0,10).map((s,i)=>{
+      const pos=i+1;
+      const posClass=pos===1?"p1":pos===2?"p2":pos===3?"p3":"";
+      return `<div class="rank-row">
+        <div class="rank-pos ${posClass}">${pos}</div>
+        <div class="rank-info">
+          <div class="rank-date">Semana ${s.id.split("-W")[1]} de ${s.id.split("-W")[0]}</div>
+          <div class="rank-meta">${Object.keys(s.dias||{}).length} instrumentos · ${s.sinteseEm?new Date(s.sinteseEm).toLocaleDateString("pt-BR"):""}</div>
+        </div>
+        <div class="rank-score">${Math.round(s.scoreGeral)}</div>
+      </div>`;
+    }).join("");
+  }
+
+  // Recordes
+  const rec=estado.recordes;
+  document.getElementById("recordes-lista").innerHTML=`
+    <div class="chips">
+      ${rec.scoreGeral!=null?`<span class="chip gold">🏆 <b>${Math.round(rec.scoreGeral)}</b> melhor score semanal</span>`:"<span class='chip'>Nenhum recorde ainda</span>"}
+      ${estado.melhorStreak>0?`<span class="chip fire">🔥 <b>${estado.melhorStreak}</b> semanas seguidas</span>`:""}
+    </div>
+    <div style="margin-top:12px;font-size:.78rem;color:var(--muted)">
+      Comparação com baseline Março/2026: ASRS Hiperatividade 97% · HRV 32ms · Score estimado ~48/100.
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORTAR
+// ═══════════════════════════════════════════════════════════
+function exportarJSON(){
+  const nome = perfilAtivo?esc(perfilAtivo.nome).replace(/\s+/g,"_"):"neuro";
+  const blob=new Blob([JSON.stringify({perfil:perfilAtivo,estado},null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="neuro_historico_"+nome+".json"; a.click();
+}
+function exportarCSV(){
+  const rows=[["Semana","Data","Instrumento","Score"]];
+  estado.semanas.forEach(sem=>{
+    if(!sem.dias) return;
+    Object.entries(sem.dias).forEach(([d,info])=>{
+      rows.push([sem.id,d,info.instrNome||"",Math.round(info.score||0)]);
+    });
+  });
+  const csv=rows.map(r=>r.join(",")).join("\n");
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="neuro_historico.csv"; a.click();
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener("DOMContentLoaded",()=>{
+  // Listener de tema do sistema
+  const mq=matchMedia("(prefers-color-scheme: light)");
+  mq.addEventListener("change",e=>{
+    try{ if(!localStorage.getItem(TEMA_KEY)) aplicarTemaSistema(e.matches?"claro":"escuro"); }catch(ex){}
+  });
+
+  // Tentar retomar sessão anterior
+  const sessaoId = lsGet(K_SESS, null);
+  if(sessaoId){
+    const users = getUsers();
+    const user = users.find(u=>u.id===sessaoId);
+    if(user){
+      // Retoma sem pedir PIN novamente (sessão salva)
+      perfilAtivo = user;
+      STORE_KEY = K_SAVE(user.id);
+      migrarLegado(user.id);
+      carregarEstadoPerfil();
+      renderHUD();
+      renderSemanaVisual();
+      renderCheckin();
+      return;
+    }
+  }
+  // Nenhuma sessão válida — abre portal
+  abrirPortal();
+});
+
+function aplicarTemaSistema(t){
+  document.documentElement.setAttribute("data-theme",t);
+  renderGraficos();
+}
+</script>
+</body>
+</html>
