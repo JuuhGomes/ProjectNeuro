@@ -384,8 +384,17 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 /* ═══════════════════════════════════════════
    GRÁFICOS SVG
 ═══════════════════════════════════════════ */
-.chart-wrap{width:100%;overflow:hidden;margin:8px 0}
-.chart-wrap svg{width:100%;display:block}
+.chart-wrap{width:100%;overflow:hidden;margin:8px 0;position:relative}
+.chart-wrap svg{width:100%;display:block;cursor:crosshair;touch-action:pan-y}
+.chart-tip{
+  position:absolute;top:4px;left:0;pointer-events:none;z-index:5;
+  background:var(--panel-a);border:1px solid var(--line);
+  padding:6px 9px;font-family:var(--f-b);font-size:.72rem;line-height:1.5;color:var(--text);
+  white-space:nowrap;opacity:0;transition:opacity .12s;
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+}
+.chart-tip b{color:var(--cyan-hi);font-family:var(--f-d);font-weight:600;letter-spacing:.03em}
 .chart-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .chart-filters .btn{font-size:.65rem;padding:4px 10px}
 .chart-filters .btn.active-f{border-color:var(--cyan);color:var(--cyan-hi);background:rgba(94,199,255,.12)}
@@ -1989,6 +1998,53 @@ function svgGrade(W,H,pad,steps,lineCol){
   return h;
 }
 
+// Crosshair + tooltip — funciona com mouse (pointermove) e toque (pointerdown/move),
+// já que pointer events cobrem os dois. A faixa de captura é a largura toda do SVG,
+// não só o marcador, para funcionar bem com o dedo.
+function attachChartHover(wrapId, pts, meta){
+  const wrap = document.getElementById(wrapId);
+  const svg = wrap && wrap.querySelector("svg");
+  const cross = svg && svg.querySelector(".chart-cross");
+  if(!wrap || !svg || !cross || !pts || pts.length<2) return;
+
+  let tip = wrap.querySelector(".chart-tip");
+  if(!tip){ tip=document.createElement("div"); tip.className="chart-tip"; wrap.appendChild(tip); }
+  const dot = svg.querySelector(".chart-hoverpt");
+  const { W, pad, xStep } = meta;
+  const px = i => pad+i*xStep;
+
+  function handle(clientX){
+    const rect = svg.getBoundingClientRect();
+    if(!rect.width) return;
+    const scaleX = W/rect.width;
+    const xSvg = (clientX-rect.left)*scaleX;
+    let idx = Math.round((xSvg-pad)/xStep);
+    idx = Math.max(0, Math.min(pts.length-1, idx));
+    const p = pts[idx];
+    const x = px(idx);
+    cross.setAttribute("x1",x); cross.setAttribute("x2",x);
+    cross.style.opacity=1;
+    if(dot){
+      const y = meta.py ? meta.py(p) : null;
+      if(y!=null){ dot.setAttribute("cx",x); dot.setAttribute("cy",y); dot.style.opacity=1; }
+      else dot.style.opacity=0;
+    }
+    tip.innerHTML = meta.fmt(p, idx);
+    tip.style.opacity=1;
+    const tw = tip.offsetWidth;
+    const leftPx = x/scaleX;
+    tip.style.left = Math.max(4, Math.min(rect.width-tw-4, leftPx-tw/2))+"px";
+  }
+  function hide(){
+    cross.style.opacity=0;
+    if(dot) dot.style.opacity=0;
+    tip.style.opacity=0;
+  }
+  svg.onpointermove = e=>handle(e.clientX);
+  svg.onpointerdown  = e=>handle(e.clientX);
+  svg.onpointerleave = hide;
+}
+
 function renderGraficos(){
   const sems = getDadosFiltrados();
   const muted=cor("--muted"), text2=cor("--text-2"), s1=cor("--s1"), s2=cor("--s2"), s3=cor("--s3"), s4=cor("--s4"), lineCol="rgba(94,199,255,.08)";
@@ -2017,6 +2073,8 @@ function renderChartScore(pts, muted, text2, lineCol, gradeCol){
   const media=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
   const mediaY=pad+(H-2*pad)*(1-(media-yMin)/(yMax-yMin||1));
   const labels=pts.map(p=>p.label);
+  const xStep=(W-2*pad)/(Math.max(pts.length-1,1));
+  const py=v=>pad+(H-2*pad)*(1-(v-yMin)/(yMax-yMin||1));
   const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
     ${svgGrade(W,H,pad,4,gradeCol)}
     <line x1="${pad}" y1="${mediaY}" x2="${W-pad}" y2="${mediaY}" stroke="${muted}" stroke-width="1" stroke-dasharray="4,4"/>
@@ -2024,14 +2082,29 @@ function renderChartScore(pts, muted, text2, lineCol, gradeCol){
     ${svgLine(pts,W,H,pad,yMin,yMax,lineCol,"rgba(47,149,219,.15)")}
     ${svgAxisH(labels,W,H,pad,muted)}
     ${pts.map((p,i)=>{
-      const xStep=(W-2*pad)/(Math.max(pts.length-1,1));
-      const x=pad+i*xStep, y=pad+(H-2*pad)*(1-(p.v-yMin)/(yMax-yMin||1));
+      const x=pad+i*xStep, y=py(p.v);
       const show=i===0||i===pts.length-1||p.v===Math.max(...vals);
       return `<circle cx="${x}" cy="${y}" r="5" fill="${lineCol}" stroke="${lineCol}" stroke-width="2"/>
         ${show?`<text x="${x}" y="${y-10}" text-anchor="middle" fill="${text2}" font-size="11" font-family="Chakra Petch,sans-serif" font-weight="600">${Math.round(p.v)}</text>`:""}`;
     }).join("")}
+    <line class="chart-cross" x1="0" y1="${pad}" x2="0" y2="${H-pad}" stroke="${muted}" stroke-width="1" opacity="0"/>
+    <circle class="chart-hoverpt" r="5" fill="${lineCol}" stroke="#fff" stroke-width="1.5" opacity="0"/>
   </svg>`;
   document.getElementById("chart-score").innerHTML=svg;
+
+  attachChartHover("chart-score", pts, {
+    W, pad, xStep,
+    py:(p)=>py(p.v),
+    fmt:(p,idx)=>{
+      const prev = idx>0 ? pts[idx-1].v : null;
+      const diff = prev!=null ? Math.round(p.v-prev) : null;
+      const diffTxt = diff==null ? "" :
+        diff>0 ? ` <span style="color:var(--ok)">▲ +${diff}</span>` :
+        diff<0 ? ` <span style="color:var(--danger)">▼ ${diff}</span>` :
+        ` <span style="color:var(--muted)">— 0</span>`;
+      return `<b>Semana ${p.label}</b><br>Score ${Math.round(p.v)}${diffTxt}`;
+    }
+  });
 }
 
 function renderMiniCharts(sems, muted, text2, cols){
@@ -2068,31 +2141,61 @@ function renderMiniCharts(sems, muted, text2, cols){
 }
 
 function renderChartGarmin(sems, muted, text2, col1, col2, gradeCol){
-  const ptsHRV=[], ptsSleep=[];
+  // Agrupa por data para HRV e Sono ficarem no mesmo eixo X (mesmo dia = mesmo índice),
+  // essencial para o crosshair mostrar os dois valores corretos ao mesmo tempo.
+  const byDate = {};
   sems.slice().reverse().forEach(sem=>{
     if(!sem.dias) return;
-    Object.values(sem.dias).forEach(d=>{
+    Object.entries(sem.dias).forEach(([dt,d])=>{
       const g=d.dados?.garmin||d.dados?.contextoRapido;
-      if(g?.hrv) ptsHRV.push({v:g.hrv,label:""});
-      if(g?.sleep) ptsSleep.push({v:g.sleep,label:""});
+      if(!g||(g.hrv==null&&g.sleep==null)) return;
+      byDate[dt] = byDate[dt]||{label:dt};
+      if(g.hrv!=null) byDate[dt].hrv=g.hrv;
+      if(g.sleep!=null) byDate[dt].sleep=g.sleep;
     });
   });
-  if(!ptsHRV.length&&!ptsSleep.length){
+  const dates = Object.keys(byDate).sort();
+  if(!dates.length){
     document.getElementById("chart-garmin").innerHTML=`<div class="empty">Registre dados Garmin no instrumento Contexto (segundas-feiras).</div>`;
     return;
   }
+  const merged = dates.map(dt=>byDate[dt]);
   const W=420,H=130,pad=32;
-  const all=[...ptsHRV,...ptsSleep].map(p=>p.v);
-  const yMin=Math.max(0,Math.min(...all)-5), yMax=Math.max(...all)+5;
-  const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+  const allVals = merged.flatMap(p=>[p.hrv,p.sleep]).filter(v=>v!=null);
+  const yMin=Math.max(0,Math.min(...allVals)-5), yMax=Math.max(...allVals)+5;
+  const xStep=(W-2*pad)/(Math.max(merged.length-1,1));
+  const px=i=>pad+i*xStep;
+  const py=v=>pad+(H-2*pad)*(1-(v-yMin)/((yMax-yMin)||1));
+  function pathFor(key){
+    let d="", started=false;
+    merged.forEach((p,i)=>{
+      const v=p[key];
+      if(v==null){ started=false; return; }
+      d += `${started?"L":"M"}${px(i)},${py(v)} `;
+      started=true;
+    });
+    return d.trim();
+  }
+  const dHRV=pathFor("hrv"), dSleep=pathFor("sleep");
+  const metaY=py(45);
+  const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
     ${svgGrade(W,H,pad,3,gradeCol)}
-    <line x1="${pad}" y1="${pad+(H-2*pad)*(1-(45-yMin)/(yMax-yMin||1))}" x2="${W-pad}" y2="${pad+(H-2*pad)*(1-(45-yMin)/(yMax-yMin||1))}" stroke="${muted}" stroke-width="1" stroke-dasharray="3,3"/>
-    <text x="${W-pad+4}" y="${pad+(H-2*pad)*(1-(45-yMin)/(yMax-yMin||1))+4}" fill="${muted}" font-size="9">meta HRV 45ms</text>
-    ${ptsHRV.length>1?svgLine(ptsHRV,W,H,pad,yMin,yMax,col1,""):""}
-    ${ptsSleep.length>1?svgLine(ptsSleep,W,H,pad,yMin,yMax,col2,""):""}
-    <text x="${pad}" y="${H-4}" fill="${muted}" font-size="9" font-family="Rajdhani,sans-serif">— HRV(ms) &nbsp; — Sleep</text>
+    <line x1="${pad}" y1="${metaY}" x2="${W-pad}" y2="${metaY}" stroke="${muted}" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="${W-pad+4}" y="${metaY+4}" fill="${muted}" font-size="9">meta HRV 45ms</text>
+    ${dHRV?`<path d="${dHRV}" fill="none" stroke="${col1}" stroke-width="2" stroke-linejoin="round"/>`:""}
+    ${dSleep?`<path d="${dSleep}" fill="none" stroke="${col2}" stroke-width="2" stroke-linejoin="round"/>`:""}
+    <text x="${pad}" y="${H-4}" fill="${col1}" font-size="9" font-family="Rajdhani,sans-serif">— HRV(ms)</text>
+    <text x="${pad+60}" y="${H-4}" fill="${col2}" font-size="9" font-family="Rajdhani,sans-serif">— Sleep</text>
+    <line class="chart-cross" x1="0" y1="${pad}" x2="0" y2="${H-pad}" stroke="${muted}" stroke-width="1" opacity="0"/>
+    <circle class="chart-hoverpt" r="4" fill="${col1}" stroke="#fff" stroke-width="1.5" opacity="0"/>
   </svg>`;
   document.getElementById("chart-garmin").innerHTML=svg;
+
+  attachChartHover("chart-garmin", merged, {
+    W, pad, xStep,
+    py:(p)=>p.hrv!=null?py(p.hrv):(p.sleep!=null?py(p.sleep):null),
+    fmt:(p)=>`<b>${fmtData(p.label)}</b><br>${p.hrv!=null?`HRV: ${p.hrv}ms`:"HRV: —"} · ${p.sleep!=null?`Sleep: ${p.sleep}`:"Sleep: —"}`
+  });
 }
 
 function renderChips(){
