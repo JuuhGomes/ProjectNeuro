@@ -405,6 +405,14 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
   box-shadow:0 6px 18px rgba(0,0,0,.35);
 }
 .chart-tip b{color:var(--cyan-hi);font-family:var(--f-d);font-weight:600;letter-spacing:.03em}
+.leitura{
+  margin-top:12px;padding:12px 14px;border:1px solid rgba(94,199,255,.15);background:var(--card-flat);
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  font-size:.84rem;color:var(--text-2);line-height:1.6;
+}
+.leitura p{margin:0 0 8px}
+.leitura p:last-child{margin-bottom:0}
+.leitura .hi{color:var(--text);font-weight:600}
 .chart-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .chart-filters .btn{font-size:.65rem;padding:4px 10px}
 .chart-filters .btn.active-f{border-color:var(--cyan);color:var(--cyan-hi);background:rgba(94,199,255,.12)}
@@ -684,6 +692,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
         <!-- Gráfico 1: Score geral -->
         <div class="slotlabel">SCORE GERAL POR SEMANA</div>
         <div class="chart-wrap" id="chart-score"></div>
+        <div class="leitura" id="leitura-evo"></div>
 
         <!-- Gráfico 2: Dimensões mini -->
         <div class="slotlabel">DIMENSÕES</div>
@@ -760,13 +769,15 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
       <div class="wb">
         <h2 class="wt">GERENCIAR PERFIL</h2>
         <div style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
-          Exportar salva seu histórico completo em um arquivo .json.<br>
-          Importar restaura um backup anterior (não apaga o histórico atual — funde os dados).
+          Exportar salva seu histórico completo em um arquivo .json ou .csv.<br>
+          Importar funde sessões de um backup no histórico deste perfil — dias que você já tem ficam como estão, nada é sobrescrito.
         </div>
         <div class="btn-row">
-          <button class="btn ghost" onclick="exportarJSON()">⬇ CSV</button>
-          <button class="btn ghost" onclick="exportarCSV()">⬇ CSV DADOS</button>
+          <button class="btn ghost" onclick="exportarJSON()">⬇ JSON</button>
+          <button class="btn ghost" onclick="exportarCSV()">⬇ CSV</button>
+          <button class="btn ghost" onclick="document.getElementById('import-sessoes-file').click()">⬆ IMPORTAR SESSÕES</button>
         </div>
+        <input type="file" id="import-sessoes-file" accept=".json" style="display:none" onchange="processarImportSessoes(event)">
         <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(94,199,255,.1)">
           <div style="font-size:.75rem;color:var(--danger);font-weight:600;margin-bottom:8px;letter-spacing:.06em">ZONA DE PERIGO</div>
           <button class="btn warn" onclick="confirmarExcluirPerfil()">🗑 EXCLUIR ESTE PERFIL</button>
@@ -1030,6 +1041,60 @@ function exportarBackupPerfil(){
 function importarBackup(){
   document.getElementById("import-file").click();
 }
+
+// Funde um estado importado num estado atual: semana a semana, dia a dia.
+// Dia que já existe localmente só é substituído se a versão importada for mais
+// recente (timestamp `em` maior) — nunca perde dado por causa de um import velho.
+// Depois recalcula scoreGeral das semanas que fecharam 6+ dias e os recordes.
+function mesclarEstados(atual, importado){
+  const base = atual && Array.isArray(atual.semanas) ? atual : {...ESTADO_INIT};
+  const semanas = base.semanas.map(s=>({...s, dias:{...(s.dias||{})}}));
+  let novos=0, substituidos=0, ignorados=0;
+
+  (importado.semanas||[]).forEach(semImp=>{
+    if(!semImp || !semImp.dias) return;
+    let semAtual = semanas.find(s=>s.id===semImp.id);
+    if(!semAtual){
+      semAtual = { id: semImp.id, dias:{}, scoreGeral:null, sinteseEm:null };
+      semanas.push(semAtual);
+    }
+    Object.entries(semImp.dias).forEach(([dia,infoImp])=>{
+      const infoAtual = semAtual.dias[dia];
+      if(!infoAtual){ semAtual.dias[dia]=infoImp; novos++; }
+      else if((infoImp.em||0) > (infoAtual.em||0)){ semAtual.dias[dia]=infoImp; substituidos++; }
+      else { ignorados++; }
+    });
+  });
+
+  semanas.forEach(s=>{
+    const n = Object.keys(s.dias||{}).length;
+    if(n>=6 && s.scoreGeral==null){ s.scoreGeral=calcScoreParcial(s); s.sinteseEm=s.sinteseEm||Date.now(); }
+  });
+  semanas.sort((a,b)=>b.id.localeCompare(a.id));
+  if(semanas.length>52) semanas.length=52;
+
+  const scores = semanas.filter(s=>s.scoreGeral!=null).map(s=>s.scoreGeral);
+  const melhorScore = scores.length ? Math.max(...scores) : null;
+  const recordes = {
+    ...base.recordes,
+    scoreGeral: melhorScore!=null ? Math.max(melhorScore, base.recordes?.scoreGeral||0) : (base.recordes?.scoreGeral ?? null)
+  };
+
+  const resultado = {
+    v:1, semanas,
+    streak: base.streak||0,
+    melhorStreak: Math.max(base.melhorStreak||0, importado.melhorStreak||0),
+    recordes
+  };
+  return { estado: resultado, novos, substituidos, ignorados };
+}
+function resumoMerge(r){
+  const partes=[`${r.novos} nova(s)`];
+  if(r.substituidos) partes.push(`${r.substituidos} atualizada(s)`);
+  if(r.ignorados) partes.push(`${r.ignorados} ignorada(s) (já tinha versão mais recente)`);
+  return partes.join(" · ");
+}
+
 function processarImport(evt){
   const file = evt.target.files[0]; if(!file) return;
   const reader = new FileReader();
@@ -1039,7 +1104,7 @@ function processarImport(evt){
       // Suporta backup completo {perfil,estado} ou estado puro
       const estadoImport = dados.estado||dados;
       if(!estadoImport.semanas) throw new Error("Formato inválido");
-      // Cria ou usa perfil do backup
+      // Cria ou usa perfil do backup — se já existir, FUNDE em vez de sobrescrever
       const nomeImport = dados.perfil?.nome||"Importado";
       const users = getUsers();
       let user = users.find(u=>u.nome===nomeImport);
@@ -1047,9 +1112,33 @@ function processarImport(evt){
         user = { id:Date.now().toString(36), nome:nomeImport, pin:null, visto:Date.now() };
         users.push(user); saveUsers(users);
       }
-      lsRaw(K_SAVE(user.id), estadoImport);
-      toast("IMPORTADO","Backup restaurado para: "+esc(nomeImport),"");
+      const atual = lsGet(K_SAVE(user.id), null);
+      const { estado: mesclado, novos, substituidos, ignorados } = mesclarEstados(atual, estadoImport);
+      lsRaw(K_SAVE(user.id), mesclado);
+      toast("IMPORTADO", "Perfil "+esc(nomeImport)+" — "+resumoMerge({novos,substituidos,ignorados}), "");
       renderPortal();
+    }catch(err){ toast("ERRO","Arquivo inválido ou corrompido.","bad"); }
+    evt.target.value = "";
+  };
+  reader.readAsText(file);
+}
+
+// Mesma lógica de fusão, mas direto no perfil já logado (aba Mais → Importar sessões).
+function processarImportSessoes(evt){
+  const file = evt.target.files[0]; if(!file || !perfilAtivo) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const dados = JSON.parse(e.target.result);
+      const estadoImport = dados.estado||dados;
+      if(!estadoImport.semanas) throw new Error("Formato inválido");
+      const { estado: mesclado, novos, substituidos, ignorados } = mesclarEstados(estado, estadoImport);
+      estado = mesclado;
+      lsSet(estado);
+      toast("SESSÕES IMPORTADAS", resumoMerge({novos,substituidos,ignorados}), "");
+      renderHUD(); renderSemanaVisual(); renderMaisPerfil();
+      if(document.getElementById("pane-historico")?.classList.contains("on")) renderHistorico();
+      if(document.getElementById("pane-evolucao")?.classList.contains("on")){ renderChips(); renderGraficos(); }
     }catch(err){ toast("ERRO","Arquivo inválido ou corrompido.","bad"); }
     evt.target.value = "";
   };
@@ -2011,6 +2100,11 @@ function svgGrade(W,H,pad,steps,lineCol){
 // Crosshair + tooltip — funciona com mouse (pointermove) e toque (pointerdown/move),
 // já que pointer events cobrem os dois. A faixa de captura é a largura toda do SVG,
 // não só o marcador, para funcionar bem com o dedo.
+// Cada ponto de dado tem seu próprio <rect class="hit"> invisível (largura = xStep,
+// altura total do gráfico) desenhado junto com o SVG. O hover então é só "qual rect
+// recebeu o ponteiro" — o navegador faz o hit-test, sem precisar recalcular a posição
+// do mouse a cada pixel. A faixa de captura já nasce maior que o marcador visível,
+// então funciona bem com o dedo também.
 function attachChartHover(wrapId, pts, meta){
   const wrap = document.getElementById(wrapId);
   const svg = wrap && wrap.querySelector("svg");
@@ -2023,14 +2117,9 @@ function attachChartHover(wrapId, pts, meta){
   const { W, pad, xStep } = meta;
   const px = i => pad+i*xStep;
 
-  function handle(clientX){
-    const rect = svg.getBoundingClientRect();
-    if(!rect.width) return;
-    const scaleX = W/rect.width;
-    const xSvg = (clientX-rect.left)*scaleX;
-    let idx = Math.round((xSvg-pad)/xStep);
-    idx = Math.max(0, Math.min(pts.length-1, idx));
+  function show(idx){
     const p = pts[idx];
+    if(!p) return;
     const x = px(idx);
     cross.setAttribute("x1",x); cross.setAttribute("x2",x);
     cross.style.opacity=1;
@@ -2041,6 +2130,8 @@ function attachChartHover(wrapId, pts, meta){
     }
     tip.innerHTML = meta.fmt(p, idx);
     tip.style.opacity=1;
+    const rect = svg.getBoundingClientRect();
+    const scaleX = rect.width ? W/rect.width : 1;
     const tw = tip.offsetWidth;
     const leftPx = x/scaleX;
     tip.style.left = Math.max(4, Math.min(rect.width-tw-4, leftPx-tw/2))+"px";
@@ -2050,9 +2141,21 @@ function attachChartHover(wrapId, pts, meta){
     if(dot) dot.style.opacity=0;
     tip.style.opacity=0;
   }
-  svg.onpointermove = e=>handle(e.clientX);
-  svg.onpointerdown  = e=>handle(e.clientX);
-  svg.onpointerleave = hide;
+  svg.querySelectorAll(".hit").forEach(h=>{
+    const idx = +h.dataset.i;
+    h.addEventListener("pointerenter", ()=>show(idx));
+    h.addEventListener("pointerdown", ()=>show(idx));
+  });
+  svg.addEventListener("pointerleave", hide);
+}
+
+function svgHitRects(n, W, H, pad, xStep){
+  let h="";
+  for(let i=0;i<n;i++){
+    const x = pad+i*xStep-xStep/2;
+    h += `<rect class="hit" data-i="${i}" x="${x.toFixed(1)}" y="${pad}" width="${xStep.toFixed(1)}" height="${(H-2*pad).toFixed(1)}" fill="transparent"/>`;
+  }
+  return h;
 }
 
 function renderGraficos(){
@@ -2062,6 +2165,7 @@ function renderGraficos(){
   // Gráfico 1: Score geral por semana
   const pts1 = sems.filter(s=>s.scoreGeral!=null).reverse().map(s=>({label:s.id.split("-W")[1]+"ª",v:s.scoreGeral}));
   renderChartScore(pts1, muted, text2, s1, lineCol);
+  renderLeitura(pts1, sems);
 
   // Mini gráficos por instrumento
   renderMiniCharts(sems, muted, text2, [s1,s2,s3,s4]);
@@ -2099,6 +2203,7 @@ function renderChartScore(pts, muted, text2, lineCol, gradeCol){
     }).join("")}
     <line class="chart-cross" x1="0" y1="${pad}" x2="0" y2="${H-pad}" stroke="${muted}" stroke-width="1" opacity="0"/>
     <circle class="chart-hoverpt" r="5" fill="${lineCol}" stroke="#fff" stroke-width="1.5" opacity="0"/>
+    ${svgHitRects(pts.length,W,H,pad,xStep)}
   </svg>`;
   document.getElementById("chart-score").innerHTML=svg;
 
@@ -2115,6 +2220,60 @@ function renderChartScore(pts, muted, text2, lineCol, gradeCol){
       return `<b>Semana ${p.label}</b><br>Score ${Math.round(p.v)}${diffTxt}`;
     }
   });
+}
+
+// Traduz a série de scores semanais em texto corrido: direção do período,
+// tamanho da oscilação normal (pra não confundir ruído com melhora/piora real)
+// e qual instrumento puxou a média pra cima ou pra baixo.
+function classificaScore(v){
+  return v>=90?"excelente (rank S)":v>=80?"muito bom (rank A)":v>=70?"bom (rank B)":v>=60?"regular (rank C)":"abaixo do esperado (rank D)";
+}
+function renderLeitura(pts, sems){
+  const el = document.getElementById("leitura-evo");
+  if(!el) return;
+  if(pts.length<3){
+    el.innerHTML = `<p>Ainda são <span class="hi">poucas semanas</span> com síntese completa para falar em tendência. A partir da terceira semana o texto passa a comparar o período.</p>`;
+    return;
+  }
+  const vals = pts.map(p=>p.v);
+  const n = vals.length, meta = Math.floor(n/2);
+  const mA = vals.slice(0,meta).reduce((a,b)=>a+b,0)/meta;
+  const mB = vals.slice(n-meta).reduce((a,b)=>a+b,0)/meta;
+  const dif = Math.round((mB-mA)*10)/10;
+  let osc=0; for(let i=1;i<n;i++) osc+=Math.abs(vals[i]-vals[i-1]);
+  osc = Math.round((osc/(n-1))*10)/10;
+  const dir = dif>osc*0.5 ? "subindo" : dif<-osc*0.5 ? "caindo" : "estável";
+  const txtDir = dir==="subindo" ? 'vem <span class="hi">subindo</span>' :
+                 dir==="caindo" ? 'vem <span class="hi">caindo</span>' :
+                 'está <span class="hi">estável</span>';
+  const p1 = `<p>Na primeira metade do período a média foi de <span class="hi">${Math.round(mA)}</span> e na segunda metade, <span class="hi">${Math.round(mB)}</span>. `+
+    `O score ${txtDir}${dir!=="estável"?` — diferença de ${Math.abs(dif)} pontos.`:"."} `+
+    `De uma semana para outra, a variação normal tem sido de cerca de ${osc} pontos — mudanças menores que isso são oscilação, não melhora nem piora real.</p>`;
+
+  const ultimo = vals[n-1];
+  const p2 = `<p>A última síntese semanal fechou em <span class="hi">${Math.round(ultimo)}</span>, considerada ${classificaScore(ultimo)}.</p>`;
+
+  // Melhor e pior instrumento no período (média do score por instrumento entre os dias filtrados)
+  const porInstr = {};
+  sems.forEach(s=>{
+    Object.values(s.dias||{}).forEach(d=>{
+      if(!d.instrNome) return;
+      (porInstr[d.instrNome]=porInstr[d.instrNome]||[]).push(d.score||0);
+    });
+  });
+  let melhor=null, pior=null;
+  Object.entries(porInstr).forEach(([nome,arr])=>{
+    const md = arr.reduce((a,b)=>a+b,0)/arr.length;
+    if(!melhor||md>melhor.md) melhor={nome,md};
+    if(!pior||md<pior.md) pior={nome,md};
+  });
+  let p3="";
+  if(melhor && pior && melhor.nome!==pior.nome){
+    p3 = `<p>Entre os instrumentos praticados no período, o melhor desempenho médio foi em <span class="hi">${esc(melhor.nome)}</span> (${Math.round(melhor.md)}). `+
+      `O mais desafiador foi <span class="hi">${esc(pior.nome)}</span> (${Math.round(pior.md)}).</p>`;
+  }
+
+  el.innerHTML = p1+p2+p3;
 }
 
 function renderMiniCharts(sems, muted, text2, cols){
@@ -2198,6 +2357,7 @@ function renderChartGarmin(sems, muted, text2, col1, col2, gradeCol){
     <text x="${pad+60}" y="${H-4}" fill="${col2}" font-size="9" font-family="Rajdhani,sans-serif">— Sleep</text>
     <line class="chart-cross" x1="0" y1="${pad}" x2="0" y2="${H-pad}" stroke="${muted}" stroke-width="1" opacity="0"/>
     <circle class="chart-hoverpt" r="4" fill="${col1}" stroke="#fff" stroke-width="1.5" opacity="0"/>
+    ${svgHitRects(merged.length,W,H,pad,xStep)}
   </svg>`;
   document.getElementById("chart-garmin").innerHTML=svg;
 
